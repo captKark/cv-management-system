@@ -1,7 +1,7 @@
 // Positions.jsx (Parent)
 import { useState } from "react";
 import Toolbar from "../components/Toolbar";
-import SearchBar from "../components/SearchBar";
+import Searchbar from "../components/Searchbar";
 import DepartmentFilter from "../components/DepartmentFilter";
 import PositionTable from "../components/PositionTable";
 import Pagination from "../components/Pagination";
@@ -37,7 +37,7 @@ const Positions = () => {
   return (
     <>
       <Toolbar />
-      <SearchBar searchText={searchText} setSearchText={setSearchText} />
+      <Searchbar searchText={searchText} setSearchText={setSearchText} />
       <DepartmentFilter department={department} setDepartment={setDepartment} />
       <PositionTable positions={filteredPositions} />
       <Pagination />
