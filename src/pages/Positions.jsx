@@ -18,6 +18,7 @@ const Positions = () => {
 
   const [searchText, setSearchText] = useState("");
   const [department, setDepartment] = useState("");
+  const [selectedPositions, setSelectedPositions] = useState([]);
 
   const normalizedSearchText = searchText.trim().toLowerCase();
 
@@ -39,7 +40,11 @@ const Positions = () => {
       <Toolbar />
       <Searchbar searchText={searchText} setSearchText={setSearchText} />
       <DepartmentFilter department={department} setDepartment={setDepartment} />
-      <PositionTable positions={filteredPositions} />
+      <PositionTable 
+        positions={filteredPositions} 
+        selectedPositions={selectedPositions}
+        setSelectedPositions={setSelectedPositions}
+        />
       <Pagination />
     </>
   );
