@@ -1,19 +1,21 @@
-function PositionTable({ positions, selectedPositions, setSelectedPositions }) {
-  const toggleSelection = (id) => {
-    if (selectedPositions.includes(id)) {
-      setSelectedPositions((prev) =>
-        prev.filter((positionId) => positionId !== id),
-      );
-    } else {
-      setSelectedPositions((prev) => [...prev, id]);
-    }
-  };
-
+function PositionTable({ 
+  positions, 
+  selectedPositions, 
+  allSelected, 
+  onToggleSelection, 
+  onSelectAll 
+}) {
   return (
     <table>
       <thead>
         <tr>
-          <th></th>
+          <th>
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={onSelectAll}
+            />
+          </th>
           <th>Title</th>
           <th>Department</th>
           <th>Location</th>
@@ -29,17 +31,19 @@ function PositionTable({ positions, selectedPositions, setSelectedPositions }) {
         ) : (
           positions.map((position) => {
             const isSelected = selectedPositions.includes(position.id);
-
             return (
               <tr key={position.id}>
                 <td>
                   <input
                     type="checkbox"
                     checked={isSelected}
-                    onChange={() => toggleSelection(position.id)}
+                    onChange={() => onToggleSelection(position.id)}
                   />
                 </td>
-                ...
+                <td>{position.title}</td>
+                <td>{position.department}</td>
+                <td>{position.location}</td>
+                <td>{position.status}</td>
               </tr>
             );
           })
