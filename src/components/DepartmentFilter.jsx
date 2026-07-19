@@ -1,4 +1,3 @@
-// DepartmentFilter.jsx (Kept separate as intended)
 function DepartmentFilter({ department, setDepartment }) {
   return (
     <select value={department} onChange={(e) => setDepartment(e.target.value)}>
@@ -8,6 +7,8 @@ function DepartmentFilter({ department, setDepartment }) {
       <option value="Product">Product</option>
       <option value="Human Resources">Human Resources</option>
       <option value="Infrastructure">Infrastructure</option>
+      <option value="Quality Assurance">Quality Assurance</option>
+      <option value="Finance">Finance</option>
     </select>
   );
 }
