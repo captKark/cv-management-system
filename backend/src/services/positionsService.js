@@ -128,9 +128,26 @@ const positions = [
 ];
 
 const getAllPositions = () => {
-    return positions;
-}
+  return positions;
+};
 
-module.exports ={
-    getAllPositions
-}
+const createPosition = (position) => {
+  const nextId =
+    positions.length > 0
+      ? positions[positions.length - 1].id + 1
+      : 1;
+
+  const newPosition = {
+    id: nextId,
+    ...position,
+  };
+
+  positions.push(newPosition);
+
+  return newPosition;
+};
+
+module.exports = {
+  getAllPositions,
+  createPosition,
+};

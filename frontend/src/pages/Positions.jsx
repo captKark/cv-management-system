@@ -4,6 +4,7 @@ import Searchbar from "../components/Searchbar";
 import DepartmentFilter from "../components/DepartmentFilter";
 import PositionTable from "../components/PositionTable";
 import Pagination from "../components/Pagination";
+import PositionForm from "../components/PositionForm";
 
 const ROWS_PER_PAGE = 5;
 
@@ -15,6 +16,7 @@ const Positions = () => {
   const [department, setDepartment] = useState("");
   const [selectedPositions, setSelectedPositions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -33,6 +35,7 @@ const Positions = () => {
         const data = await response.json();
         setPositions(data);
       } catch (err) {
+        console.error(err);
         setError("Error loading positions. Please try again later.");
       } finally {
         setLoading(false);
@@ -116,6 +119,42 @@ const Positions = () => {
     );
     setSelectedPositions([]);
   };
+
+  const handleOpenAddModal = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const handleCreatePosition = async (newPosition) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/positions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newPosition),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to create position.");
+      }
+
+      const createdPosition = await response.json();
+
+      setPositions((prev) => [...prev, createdPosition]);
+
+      handleCloseAddModal();
+    } catch (err) {
+      console.error(err);
+      alert("Unable to create position.");
+    }
+  };
   if (loading) {
     return <p>Loading positions...</p>;
   }
@@ -126,6 +165,7 @@ const Positions = () => {
   return (
     <>
       <Toolbar
+        onAddPosition={handleOpenAddModal}
         onDeleteSelected={handleDeleteSelected}
         canDelete={selectedPositions.length > 0}
       />
@@ -143,6 +183,12 @@ const Positions = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
+      {isAddModalOpen && (
+        <PositionForm
+          onCreate={handleCreatePosition}
+          onClose={handleCloseAddModal}
+        />
+      )}
     </>
   );
 };

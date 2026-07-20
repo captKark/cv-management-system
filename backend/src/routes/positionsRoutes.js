@@ -1,8 +1,9 @@
 const express = require("express");
-const positionsController = require("../controllers/positionsController");
-
 const router = express.Router();
 
-router.get("/", positionsController.getAllPositions);
+const positionsController = require("../controllers/positionsController");
 
-module.exports = router;
+router.get("/", positionsController.getAllPositions);
+router.post("/", positionsController.createPosition);
+
+module.exports = router;    
