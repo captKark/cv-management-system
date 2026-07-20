@@ -12,12 +12,16 @@ const Positions = () => {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const [searchText, setSearchText] = useState("");
   const [department, setDepartment] = useState("");
+
+  const [selectedPositions, setSelectedPositions] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState(null);
+  const [editingPosition, setEditingPosition] = useState(null);
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -61,11 +65,13 @@ const Positions = () => {
   });
 
   const totalPages = Math.ceil(filteredPositions.length / ROWS_PER_PAGE);
+
   const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
   const endIndex = startIndex + ROWS_PER_PAGE;
+
   const currentPagePositions = filteredPositions.slice(startIndex, endIndex);
 
-  // --- Selection Business Logic
+  // ---------- Selection Logic ----------
 
   const visibleIds = currentPagePositions.map((position) => position.id);
 
@@ -78,6 +84,7 @@ const Positions = () => {
       if (prev.includes(id)) {
         return prev.filter((positionId) => positionId !== id);
       }
+
       return [...prev, id];
     });
   };
@@ -95,11 +102,14 @@ const Positions = () => {
     }
   };
 
+  // ---------- Pagination ----------
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchText, department]);
@@ -110,16 +120,23 @@ const Positions = () => {
     }
   }, [currentPage, totalPages]);
 
+  // ---------- Delete ----------
+
   const handleDeleteSelected = () => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete ${selectedPositions.length} selected position(s)?`,
     );
+
     if (!confirmDelete) return;
+
     setPositions((prev) =>
       prev.filter((position) => !selectedPositions.includes(position.id)),
     );
+
     setSelectedPositions([]);
   };
+
+  // ---------- Create ----------
 
   const handleOpenAddModal = () => {
     setIsAddModalOpen(true);
@@ -157,23 +174,26 @@ const Positions = () => {
     }
   };
 
+  // ---------- Edit ----------
+
   const handleOpenEditModal = () => {
     const position = positions.find(
       (position) => position.id === selectedPositions[0],
     );
 
-    setSelectedPosition(position);
-    setIsEditModalOpen(true);
+    if (!position) return;
+
+    setEditingPosition(position);
   };
 
   const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-    setSelectedPosition(null);
+    setEditingPosition(null);
   };
+
   const handleUpdatePosition = async (updatedData) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/positions/${selectedPosition.id}`,
+        `${import.meta.env.VITE_API_URL}/api/positions/${editingPosition.id}`,
         {
           method: "PUT",
           headers: {
@@ -195,13 +215,14 @@ const Positions = () => {
         ),
       );
 
-      setSelectedPositions([]);
       handleCloseEditModal();
+      setSelectedPositions([]);
     } catch (err) {
       console.error(err);
       alert("Unable to update position.");
     }
   };
+
   if (loading) {
     return <p>Loading positions...</p>;
   }
@@ -209,6 +230,7 @@ const Positions = () => {
   if (error) {
     return <p>{error}</p>;
   }
+
   return (
     <>
       <Toolbar
@@ -218,8 +240,11 @@ const Positions = () => {
         canEdit={selectedPositions.length === 1}
         canDelete={selectedPositions.length > 0}
       />
+
       <Searchbar searchText={searchText} setSearchText={setSearchText} />
+
       <DepartmentFilter department={department} setDepartment={setDepartment} />
+
       <PositionTable
         positions={currentPagePositions}
         selectedPositions={selectedPositions}
@@ -227,19 +252,30 @@ const Positions = () => {
         onToggleSelection={handleToggleSelection}
         onSelectAll={handleSelectAll}
       />
+
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      {isEditModalOpen && (
+
+      {editingPosition ? (
         <PositionForm
-          initialValues={selectedPosition}
+          initialValues={editingPosition}
           onSubmit={handleUpdatePosition}
           onClose={handleCloseEditModal}
         />
+      ) : (
+        isAddModalOpen && (
+          <PositionForm
+            initialValues={null}
+            onSubmit={handleCreatePosition}
+            onClose={handleCloseAddModal}
+          />
+        )
       )}
     </>
   );
 };
+
 export default Positions;
