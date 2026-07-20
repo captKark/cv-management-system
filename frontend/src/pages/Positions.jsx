@@ -14,9 +14,10 @@ const Positions = () => {
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [department, setDepartment] = useState("");
-  const [selectedPositions, setSelectedPositions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState(null);
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -155,6 +156,52 @@ const Positions = () => {
       alert("Unable to create position.");
     }
   };
+
+  const handleOpenEditModal = () => {
+    const position = positions.find(
+      (position) => position.id === selectedPositions[0],
+    );
+
+    setSelectedPosition(position);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedPosition(null);
+  };
+  const handleUpdatePosition = async (updatedData) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/positions/${selectedPosition.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update position.");
+      }
+
+      const updatedPosition = await response.json();
+
+      setPositions((prev) =>
+        prev.map((position) =>
+          position.id === updatedPosition.id ? updatedPosition : position,
+        ),
+      );
+
+      setSelectedPositions([]);
+      handleCloseEditModal();
+    } catch (err) {
+      console.error(err);
+      alert("Unable to update position.");
+    }
+  };
   if (loading) {
     return <p>Loading positions...</p>;
   }
@@ -166,7 +213,9 @@ const Positions = () => {
     <>
       <Toolbar
         onAddPosition={handleOpenAddModal}
+        onEditSelected={handleOpenEditModal}
         onDeleteSelected={handleDeleteSelected}
+        canEdit={selectedPositions.length === 1}
         canDelete={selectedPositions.length > 0}
       />
       <Searchbar searchText={searchText} setSearchText={setSearchText} />
@@ -183,10 +232,11 @@ const Positions = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      {isAddModalOpen && (
+      {isEditModalOpen && (
         <PositionForm
-          onCreate={handleCreatePosition}
-          onClose={handleCloseAddModal}
+          initialValues={selectedPosition}
+          onSubmit={handleUpdatePosition}
+          onClose={handleCloseEditModal}
         />
       )}
     </>

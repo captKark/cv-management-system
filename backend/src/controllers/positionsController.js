@@ -10,7 +10,22 @@ const createPosition = (req, res) => {
   res.status(201).json(createdPosition);
 };
 
+const updatePosition = (req, res) => {
+  const id = Number(req.params.id);
+
+  const updatedPosition = positionsService.updatePosition(id, req.body);
+
+  if (!updatedPosition) {
+    return res.status(404).json({
+      message: "Position not found.",
+    });
+  }
+
+  res.json(updatedPosition);
+};
+
 module.exports = {
   getAllPositions,
   createPosition,
+  updatePosition,
 };

@@ -1,10 +1,12 @@
 import { useState } from "react";
 
-function PositionForm({ onCreate, onClose }) {
-  const [title, setTitle] = useState("");
-  const [department, setDepartment] = useState("");
-  const [location, setLocation] = useState("");
-  const [status, setStatus] = useState("");
+function PositionForm({ initialValues, onSubmit, onClose }) {
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [department, setDepartment] = useState(
+    initialValues?.department ?? "",
+  );
+  const [location, setLocation] = useState(initialValues?.location ?? "");
+  const [status, setStatus] = useState(initialValues?.status ?? "");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,7 +21,7 @@ function PositionForm({ onCreate, onClose }) {
       return;
     }
 
-    onCreate({
+    onSubmit({
       title: title.trim(),
       department: department.trim(),
       location: location.trim(),
@@ -29,7 +31,7 @@ function PositionForm({ onCreate, onClose }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Add Position</h2>
+      <h2>{initialValues ? "Edit Position" : "Add Position"}</h2>
 
       <div>
         <label>Title</label>
@@ -67,7 +69,10 @@ function PositionForm({ onCreate, onClose }) {
         />
       </div>
 
-      <button type="submit">Create</button>
+      <button type="submit">
+        {initialValues ? "Update" : "Create"}
+      </button>
+
       <button type="button" onClick={onClose}>
         Cancel
       </button>

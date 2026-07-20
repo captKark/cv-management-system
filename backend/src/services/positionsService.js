@@ -147,7 +147,26 @@ const createPosition = (position) => {
   return newPosition;
 };
 
+const updatePosition = (id, updatedData) => {
+  const index = positions.findIndex((position) => position.id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const updatedPosition = {
+    ...positions[index],
+    ...updatedData,
+    id,
+  };
+
+  positions[index] = updatedPosition;
+
+  return updatedPosition;
+};
+
 module.exports = {
   getAllPositions,
   createPosition,
+  updatePosition,
 };
