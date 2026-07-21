@@ -6,6 +6,7 @@ import Positions from "./pages/Positions";
 import CVs from "./pages/CVs";
 import Templates from "./pages/Templates";
 import About from "./pages/About";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import MainLayout from "./layout/MainLayout";
 
@@ -18,15 +19,17 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route element={<MainLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/positions" element={<Positions />} />
-          <Route path="/cvs" element={<CVs />} />
-          <Route path="/templates" element={<Templates />} />
-          <Route path="/about" element={<About />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/positions" element={<Positions />} />
+            <Route path="/cvs" element={<CVs />} />
+            <Route path="/templates" element={<Templates />} />
+            <Route path="/about" element={<About />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
   );
 }
 
-export default App; 
+export default App;
