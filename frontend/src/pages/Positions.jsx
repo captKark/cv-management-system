@@ -6,6 +6,7 @@ import PositionTable from "../components/PositionTable";
 import Pagination from "../components/Pagination";
 import PositionForm from "../components/PositionForm";
 
+const API_URL = `${import.meta.env.VITE_API_URL}/api/positions`;
 const ROWS_PER_PAGE = 5;
 
 const Positions = () => {

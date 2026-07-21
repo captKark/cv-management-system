@@ -133,7 +133,9 @@ const getAllPositions = () => {
 
 const createPosition = (position) => {
   const nextId =
-    positions.length > 0 ? positions[positions.length - 1].id + 1 : 1;
+    positions.length > 0
+      ? Math.max(...positions.map((position) => position.id)) + 1
+      : 1;
 
   const newPosition = {
     id: nextId,
