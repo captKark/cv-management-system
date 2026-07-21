@@ -1,5 +1,5 @@
-const positions = [
-     {
+let positions = [
+  {
     id: 1,
     title: "Frontend Developer",
     department: "Engineering",
@@ -133,9 +133,7 @@ const getAllPositions = () => {
 
 const createPosition = (position) => {
   const nextId =
-    positions.length > 0
-      ? positions[positions.length - 1].id + 1
-      : 1;
+    positions.length > 0 ? positions[positions.length - 1].id + 1 : 1;
 
   const newPosition = {
     id: nextId,
@@ -165,8 +163,17 @@ const updatePosition = (id, updatedData) => {
   return updatedPosition;
 };
 
+const deletePositions = (ids) => {
+  const initialLength = positions.length;
+
+  positions = positions.filter((position) => !ids.includes(position.id));
+
+  return initialLength - positions.length;
+};
+
 module.exports = {
   getAllPositions,
   createPosition,
   updatePosition,
+  deletePositions,
 };

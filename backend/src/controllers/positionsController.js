@@ -12,7 +12,6 @@ const createPosition = (req, res) => {
 
 const updatePosition = (req, res) => {
   const id = Number(req.params.id);
-
   const updatedPosition = positionsService.updatePosition(id, req.body);
 
   if (!updatedPosition) {
@@ -23,9 +22,20 @@ const updatePosition = (req, res) => {
 
   res.json(updatedPosition);
 };
+const deletePositions = (req, res) => {
+  const { ids } = req.body;
+
+  const deletedCount = positionsService.deletePositions(ids);
+
+  res.status(200).json({
+    message: "Positions deleted successfully.",
+    deletedCount,
+  });
+};
 
 module.exports = {
   getAllPositions,
   createPosition,
   updatePosition,
+  deletePositions,
 };

@@ -122,18 +122,40 @@ const Positions = () => {
 
   // ---------- Delete ----------
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete ${selectedPositions.length} selected position(s)?`,
     );
 
     if (!confirmDelete) return;
 
-    setPositions((prev) =>
-      prev.filter((position) => !selectedPositions.includes(position.id)),
-    );
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/positions`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ids: selectedPositions,
+          }),
+        },
+      );
 
-    setSelectedPositions([]);
+      if (!response.ok) {
+        throw new Error("Failed to delete positions.");
+      }
+
+      setPositions((prev) =>
+        prev.filter((position) => !selectedPositions.includes(position.id)),
+      );
+
+      setSelectedPositions([]);
+    } catch (err) {
+      console.error(err);
+      alert("Unable to delete positions.");
+    }
   };
 
   // ---------- Create ----------
