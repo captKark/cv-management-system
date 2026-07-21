@@ -124,11 +124,11 @@ const Positions = () => {
   // ---------- Delete ----------
 
   const handleDeleteSelected = async () => {
-    const confirmDelete = window.confirm(
+    const confirmed = window.confirm(
       `Are you sure you want to delete ${selectedPositions.length} selected position(s)?`,
     );
 
-    if (!confirmDelete) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(
@@ -246,6 +246,34 @@ const Positions = () => {
     }
   };
 
+  const handleDuplicateSelected = async () => {
+    if (selectedPositions.length !== 1) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_URL}/${selectedPositions[0]}/duplicate`,
+        {
+          method: "POST",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to duplicate position.");
+      }
+
+      const duplicatedPosition = await response.json();
+
+      setPositions((prev) => [...prev, duplicatedPosition]);
+
+      setSelectedPositions([]);
+    } catch (err) {
+      console.error(err);
+      alert("Unable to duplicate position.");
+    }
+  };
+
   if (loading) {
     return <p>Loading positions...</p>;
   }
@@ -258,8 +286,10 @@ const Positions = () => {
     <>
       <Toolbar
         onAdd={handleOpenAddModal}
+        onDuplicateSelected={handleDuplicateSelected}
         onEditSelected={handleOpenEditModal}
         onDeleteSelected={handleDeleteSelected}
+        canDuplicate={selectedPositions.length === 1}
         canEdit={selectedPositions.length === 1}
         canDelete={selectedPositions.length > 0}
         addLabel="Add Position"

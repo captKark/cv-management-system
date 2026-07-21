@@ -168,14 +168,40 @@ const updatePosition = (id, updatedData) => {
 const deletePositions = (ids) => {
   const initialLength = positions.length;
 
-  positions = positions.filter((position) => !ids.includes(position.id));
+  for (let i = positions.length - 1; i >= 0; i--) {
+    if (ids.includes(positions[i].id)) {
+      positions.splice(i, 1);
+    }
+  }
 
   return initialLength - positions.length;
 };
+const duplicatePosition = (id) => {
+  const position = positions.find((position) => position.id === Number(id));
 
+  if (!position) {
+    return null;
+  }
+
+  const nextId =
+    positions.length > 0
+      ? Math.max(...positions.map((position) => position.id)) + 1
+      : 1;
+
+  const duplicatedPosition = {
+    ...position,
+    id: nextId,
+    title: `${position.title} (Copy)`,
+  };
+
+  positions.push(duplicatedPosition);
+
+  return duplicatedPosition;
+};
 module.exports = {
   getAllPositions,
   createPosition,
   updatePosition,
   deletePositions,
+  duplicatePosition,
 };

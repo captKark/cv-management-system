@@ -1,11 +1,17 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { USER_STORAGE_KEY } from "../constants/storage";
 
-function ProtectedRoute() {
-  const user = localStorage.getItem(USER_STORAGE_KEY);
+function ProtectedRoute({ allowedRoles }) {
+  const storedUser = localStorage.getItem(USER_STORAGE_KEY);
 
-  if (!user) {
+  if (!storedUser) {
     return <Navigate to="/login" replace />;
+  }
+
+  const user = JSON.parse(storedUser);
+
+  if (!allowedRoles.includes(user.role)) {
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return <Outlet />;

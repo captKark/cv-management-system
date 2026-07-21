@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { USER_STORAGE_KEY } from "../constants/storage";
+import { hasRole, getCurrentUser } from "../utils/auth";
 
 function Header() {
   const navigate = useNavigate();
 
-  const storedUser = localStorage.getItem(USER_STORAGE_KEY);
-
-  const user = storedUser ? JSON.parse(storedUser) : null;
+  const user = getCurrentUser();
 
   const handleLogout = () => {
     localStorage.removeItem(USER_STORAGE_KEY);
@@ -18,11 +17,13 @@ function Header() {
       <nav>
         <Link to="/dashboard">Dashboard</Link>
 
-        <Link to="/positions">Positions</Link>
+        {hasRole("admin", "recruiter") && (
+          <Link to="/positions">Positions</Link>
+        )}
 
         <Link to="/cvs">CVs</Link>
 
-        <Link to="/templates">Templates</Link>
+        {hasRole("admin") && <Link to="/templates">Templates</Link>}
       </nav>
 
       {user && (

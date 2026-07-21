@@ -234,6 +234,7 @@ function CVs() {
       />
       {editingCV ? (
         <CVForm
+          positions={positions}
           initialValues={editingCV}
           onSubmit={handleUpdateCV}
           onClose={handleCloseEditModal}
@@ -241,6 +242,7 @@ function CVs() {
       ) : (
         isAddModalOpen && (
           <CVForm
+            positions={positions}
             initialValues={null}
             onSubmit={handleCreateCV}
             onClose={() => setIsAddModalOpen(false)}

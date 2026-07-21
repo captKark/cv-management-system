@@ -5,7 +5,8 @@ const positionsController = require("../controllers/positionsController");
 
 router.get("/", positionsController.getAllPositions);
 router.post("/", positionsController.createPosition);
+router.post("/:id/duplicate", positionsController.duplicatePosition);
 router.put("/:id", positionsController.updatePosition);
 router.delete("/", positionsController.deletePositions);
 
-module.exports = router;    
+module.exports = router;

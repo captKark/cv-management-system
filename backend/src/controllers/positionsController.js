@@ -33,9 +33,23 @@ const deletePositions = (req, res) => {
   });
 };
 
+const duplicatePosition = (req, res) => {
+  const { id } = req.params;
+
+  const duplicatedPosition = positionsService.duplicatePosition(id);
+
+  if (!duplicatedPosition) {
+    return res.status(404).json({
+      message: "Position not found.",
+    });
+  }
+
+  res.status(201).json(duplicatedPosition);
+};
 module.exports = {
   getAllPositions,
   createPosition,
   updatePosition,
   deletePositions,
+  duplicatePosition,
 };

@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { DEPARTMENTS } from "../constants/departments";
+import { POSITION_STATUSES } from "../constants/status";
 
 function PositionForm({ initialValues, onSubmit, onClose }) {
   const [title, setTitle] = useState(initialValues?.title ?? "");
-  const [department, setDepartment] = useState(
-    initialValues?.department ?? "",
-  );
+  const [department, setDepartment] = useState(initialValues?.department ?? "");
   const [location, setLocation] = useState(initialValues?.location ?? "");
   const [status, setStatus] = useState(initialValues?.status ?? "");
 
@@ -44,11 +44,18 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
 
       <div>
         <label>Department</label>
-        <input
-          type="text"
+        <select
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
-        />
+        >
+          <option value="">Select department</option>
+
+          {DEPARTMENTS.map((dept) => (
+            <option key={dept} value={dept}>
+              {dept}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
@@ -62,16 +69,18 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
 
       <div>
         <label>Status</label>
-        <input
-          type="text"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        />
+        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <option value="">Select status</option>
+
+          {POSITION_STATUSES.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <button type="submit">
-        {initialValues ? "Update" : "Create"}
-      </button>
+      <button type="submit">{initialValues ? "Update" : "Create"}</button>
 
       <button type="button" onClick={onClose}>
         Cancel
