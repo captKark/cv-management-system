@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const USER_STORAGE_KEY = "currentUser";
+import { USER_STORAGE_KEY } from "../constants/storage";
 
 function Login() {
   const navigate = useNavigate();

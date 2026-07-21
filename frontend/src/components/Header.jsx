@@ -1,48 +1,35 @@
 import { Link, useNavigate } from "react-router-dom";
-
-const USER_STORAGE_KEY = "currentUser";
+import { USER_STORAGE_KEY } from "../constants/storage";
 
 function Header() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(
-    localStorage.getItem(USER_STORAGE_KEY)
-  );
+  const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
   const handleLogout = () => {
     localStorage.removeItem(USER_STORAGE_KEY);
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (
     <header>
       <nav>
-        <Link to="/dashboard">
-          Dashboard
-        </Link>
+        <Link to="/dashboard">Dashboard</Link>
 
-        <Link to="/positions">
-          Positions
-        </Link>
+        <Link to="/positions">Positions</Link>
 
-        <Link to="/cvs">
-          CVs
-        </Link>
+        <Link to="/cvs">CVs</Link>
 
-        <Link to="/templates">
-          Templates
-        </Link>
+        <Link to="/templates">Templates</Link>
       </nav>
 
       {user && (
         <div>
-          <span>
-            {user.name}
-          </span>
+          <span>{user.name}</span>
 
-          <button onClick={handleLogout}>
-            Logout
-          </button>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       )}
     </header>

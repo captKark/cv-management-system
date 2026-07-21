@@ -256,11 +256,12 @@ const Positions = () => {
   return (
     <>
       <Toolbar
-        onAddPosition={handleOpenAddModal}
+        onAdd={handleOpenAddModal}
         onEditSelected={handleOpenEditModal}
         onDeleteSelected={handleDeleteSelected}
         canEdit={selectedPositions.length === 1}
         canDelete={selectedPositions.length > 0}
+        addLabel="Add Position"
       />
 
       <Searchbar searchText={searchText} setSearchText={setSearchText} />

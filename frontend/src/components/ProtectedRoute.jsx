@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-
-const USER_STORAGE_KEY = "currentUser";
+import { USER_STORAGE_KEY } from "../constants/storage";
 
 function ProtectedRoute() {
   const user = localStorage.getItem(USER_STORAGE_KEY);
