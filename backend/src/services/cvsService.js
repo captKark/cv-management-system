@@ -17,51 +17,63 @@ const cvs = [
   },
 ];
 
-const getAllCVs = () => {
-  return cvs;
+const prisma = require("../lib/prisma");
+
+const getAllCVs = async () => {
+  return await prisma.cV.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
 };
 
-const createCV = (cv) => {
-  const nextId = cvs.length > 0 ? Math.max(...cvs.map((cv) => cv.id)) + 1 : 1;
-
-  const newCV = {
-    id: nextId,
-    ...cv,
-  };
-
-  cvs.push(newCV);
-
-  return newCV;
+const createCV = async (cv) => {
+  return await prisma.cV.create({
+    data: {
+      candidateName: cv.candidateName,
+      positionId: cv.positionId,
+      positionTitle: cv.positionTitle,
+      status: cv.status,
+      updatedAt: cv.updatedAt,
+    },
+  });
 };
 
-const updateCV = (id, updatedData) => {
-  const index = cvs.findIndex((cv) => cv.id === Number(id));
+const updateCV = async (id, updatedData) => {
+  const existingCV = await prisma.cV.findUnique({
+    where: {
+      id,
+    },
+  });
 
-  if (index === -1) {
+  if (!existingCV) {
     return null;
   }
 
-  const updatedCV = {
-    ...cvs[index],
-    ...updatedData,
-    id,
-  };
-
-  cvs[index] = updatedCV;
-
-  return updatedCV;
+  return await prisma.cV.update({
+    where: {
+      id,
+    },
+    data: {
+      candidateName: updatedData.candidateName,
+      positionId: updatedData.positionId,
+      positionTitle: updatedData.positionTitle,
+      status: updatedData.status,
+      updatedAt: updatedData.updatedAt,
+    },
+  });
 };
 
-const deleteCVs = (ids) => {
-  const initialLength = cvs.length;
+const deleteCVs = async (ids) => {
+  const result = await prisma.cV.deleteMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+  });
 
-  for (let i = cvs.length - 1; i >= 0; i--) {
-    if (ids.includes(cvs[i].id)) {
-      cvs.splice(i, 1);
-    }
-  }
-
-  return initialLength - cvs.length;
+  return result.count;
 };
 
 module.exports = {

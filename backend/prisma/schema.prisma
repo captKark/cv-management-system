@@ -14,3 +14,12 @@ model Position {
   location   String
   status     String
 }
+
+model CV {
+  id            Int    @id @default(autoincrement())
+  candidateName String
+  positionId    Int
+  positionTitle String
+  status        String
+  updatedAt     String
+}

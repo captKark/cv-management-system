@@ -1,21 +1,21 @@
 const cvsService = require("../services/cvsService");
 
-const getAllCVs = (req, res) => {
-  const cvs = cvsService.getAllCVs();
+const getAllCVs = async (req, res) => {
+  const cvs = await cvsService.getAllCVs();
 
   res.status(200).json(cvs);
 };
 
-const createCV = (req, res) => {
-  const createdCV = cvsService.createCV(req.body);
+const createCV = async (req, res) => {
+  const createdCV = await cvsService.createCV(req.body);
+
   res.status(201).json(createdCV);
 };
 
-const updateCV = (req, res) => {
+const updateCV = async (req, res) => {
   const id = Number(req.params.id);
-  const updatedData = req.body;
 
-  const updatedCV = cvsService.updateCV(id, updatedData);
+  const updatedCV = await cvsService.updateCV(id, req.body);
 
   if (!updatedCV) {
     return res.status(404).json({
@@ -23,13 +23,13 @@ const updateCV = (req, res) => {
     });
   }
 
-  res.status(200).json(updatedCV);
+  res.json(updatedCV);
 };
 
-const deleteCVs = (req, res) => {
+const deleteCVs = async (req, res) => {
   const { ids } = req.body;
 
-  const deletedCount = cvsService.deleteCVs(ids);
+  const deletedCount = await cvsService.deleteCVs(ids);
 
   res.status(200).json({
     message: "CVs deleted successfully.",

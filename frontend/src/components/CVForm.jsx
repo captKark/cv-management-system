@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function CVForm({ initialValues, onSubmit, onClose }) {
+function CVForm({ initialValues, positions, onSubmit, onClose }) {
   const [candidateName, setCandidateName] = useState(
     initialValues?.candidateName ?? "",
   );
@@ -11,7 +11,7 @@ function CVForm({ initialValues, onSubmit, onClose }) {
 
   const [status, setStatus] = useState(initialValues?.status ?? "");
   const [positionId, setPositionId] = useState(initialValues?.positionId ?? "");
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -56,7 +56,7 @@ function CVForm({ initialValues, onSubmit, onClose }) {
             );
 
             setPositionId(selectedId);
-            setPositionTitle(selectedPosition.title);
+            setPositionTitle(selectedPosition?.title ?? "");
           }}
         >
           <option value="">Select Position</option>

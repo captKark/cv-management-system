@@ -10,6 +10,7 @@ const API_URL = `${import.meta.env.VITE_API_URL}/api/cvs`;
 
 function CVs() {
   const [cvs, setCVs] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -22,28 +23,34 @@ function CVs() {
   const [editingCV, setEditingCV] = useState(null);
 
   useEffect(() => {
-    const fetchCVs = async () => {
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(API_URL);
+        const [cvsResponse, positionsResponse] = await Promise.all([
+          fetch(API_URL),
+          fetch(`${import.meta.env.VITE_API_URL}/api/positions`),
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch CVs.");
+        if (!cvsResponse.ok || !positionsResponse.ok) {
+          throw new Error("Failed to fetch data.");
         }
 
-        const data = await response.json();
-        setCVs(data);
+        const cvsData = await cvsResponse.json();
+        const positionsData = await positionsResponse.json();
+
+        setCVs(cvsData);
+        setPositions(positionsData);
       } catch (err) {
         console.error(err);
-        setError("Error loading CVs. Please try again later.");
+        setError("Error loading data.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCVs();
+    fetchData();
   }, []);
 
   const normalizedSearchText = searchText.trim().toLowerCase();
