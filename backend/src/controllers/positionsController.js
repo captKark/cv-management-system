@@ -49,10 +49,25 @@ const duplicatePosition = async (req, res) => {
 
   res.status(201).json(duplicatedPosition);
 };
+const getPositionTemplate = async (req, res) => {
+  const id = Number(req.params.id);
+
+  const position = await positionsService.getPositionTemplate(id);
+
+  if (!position) {
+    return res.status(404).json({
+      message: "Position not found.",
+    });
+  }
+
+  res.json(position);
+};
 module.exports = {
   getAllPositions,
   createPosition,
   updatePosition,
   deletePositions,
   duplicatePosition,
+  getPositionTemplate,
+  
 };

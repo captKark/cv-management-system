@@ -85,10 +85,24 @@ const duplicatePosition = async (id) => {
     },
   });
 };
+
+const getPositionTemplate = async (id) => {
+  return prisma.position.findUnique({
+    where: { id },
+    include: {
+      attributes: {
+        include: {
+          attribute: true,
+        },
+      },
+    },
+  });
+};
 module.exports = {
   getAllPositions,
   createPosition,
   updatePosition,
   deletePositions,
   duplicatePosition,
+  getPositionTemplate 
 };

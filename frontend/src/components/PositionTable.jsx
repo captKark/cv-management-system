@@ -24,13 +24,12 @@ function PositionTable({
                 </th>
 
                 <th className="text-nowrap">Title</th>
-
                 <th className="text-nowrap">Department</th>
-
                 <th className="text-nowrap">Attributes</th>
-
+                <th className="text-nowrap">Visibility</th>
+                <th className="text-nowrap">Project Tag</th>
+                <th className="text-nowrap">Max Projects</th>
                 <th className="text-nowrap">Location</th>
-
                 <th className="text-nowrap">Status</th>
               </tr>
             </thead>
@@ -38,7 +37,7 @@ function PositionTable({
             <tbody>
               {positions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center text-muted py-5">
+                  <td colSpan={9} className="text-center text-muted py-5">
                     <h5 className="mb-2">No positions found</h5>
 
                     <p className="mb-0">
@@ -74,6 +73,22 @@ function PositionTable({
                           <span className="text-muted">—</span>
                         )}
                       </td>
+
+                      <td>
+                        <span
+                          className={`badge ${
+                            position.visibility === "Public"
+                              ? "bg-success"
+                              : "bg-warning text-dark"
+                          }`}
+                        >
+                          {position.visibility}
+                        </span>
+                      </td>
+
+                      <td>{position.projectTag || "—"}</td>
+
+                      <td>{position.maxProjects}</td>
 
                       <td>{position.location}</td>
 

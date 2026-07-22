@@ -27,15 +27,57 @@ const getAllCVs = async () => {
   });
 };
 
-const createCV = async (cv) => {
-  return await prisma.cV.create({
-    data: {
-      candidateName: cv.candidateName,
-      positionId: cv.positionId,
-      positionTitle: cv.positionTitle,
-      status: cv.status,
-      updatedAt: cv.updatedAt,
-    },
+const createCV = async (cvData) => {
+  return await prisma.$transaction(async (tx) => {
+    // 1. Create the CV
+    const createdCV = await tx.cV.create({
+      data: {
+        candidateName: cvData.candidateName,
+        positionId: Number(cvData.positionId),
+        positionTitle: cvData.positionTitle,
+        status: cvData.status,
+        updatedAt: new Date().toISOString(),
+      },
+    });
+
+    // 2. Load the Position Template
+    const position = await tx.position.findUnique({
+      where: {
+        id: Number(cvData.positionId),
+      },
+      include: {
+        attributes: true,
+      },
+    });
+
+    if (!position) {
+      throw new Error("Position not found.");
+    }
+
+    // 3. Automatically create empty attribute values
+    if (position.attributes.length > 0) {
+      await tx.cVAttributeValue.createMany({
+        data: position.attributes.map((attribute) => ({
+          cvId: createdCV.id,
+          attributeId: attribute.attributeId,
+          value: "",
+        })),
+      });
+    }
+
+    // 4. Return the generated CV with its attribute values
+    return await tx.cV.findUnique({
+      where: {
+        id: createdCV.id,
+      },
+      include: {
+        attributeValues: {
+          include: {
+            attribute: true,
+          },
+        },
+      },
+    });
   });
 };
 

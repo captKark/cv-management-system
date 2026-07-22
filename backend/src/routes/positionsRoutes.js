@@ -13,7 +13,7 @@ router.get(
   "/:id/attributes",
   positionAttributeController.getPositionAttributes,
 );
-
+router.get("/:id/template", positionsController.getPositionTemplate);
 router.put(
   "/:id/attributes",
   positionAttributeController.updatePositionAttributes,
