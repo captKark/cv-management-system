@@ -13,6 +13,8 @@ model Position {
   department String
   location   String
   status     String
+
+  attributes PositionAttribute[]
 }
 
 model CV {
@@ -24,9 +26,21 @@ model CV {
   updatedAt     String
 }
 model Attribute {
-  id         Int      @id @default(autoincrement())
-  name       String   @unique
-  category   String
-  type       String
-  createdAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  category  String
+  type      String
+  createdAt DateTime @default(now())
+
+  positions PositionAttribute[]
+}
+
+model PositionAttribute {
+  positionId  Int
+  attributeId Int
+
+  position  Position  @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+
+  @@id([positionId, attributeId])
 }

@@ -7,6 +7,8 @@ function Toolbar({
   canDelete,
   canDuplicate,
   addLabel,
+  onAssignAttributes,
+  canAssignAttributes,
 }) {
   return (
     <div className="card shadow-sm mb-3">
@@ -22,7 +24,15 @@ function Toolbar({
         >
           Edit Selected
         </button>
-
+        {onAssignAttributes && (
+          <button
+            className="btn btn-info text-white"
+            onClick={onAssignAttributes}
+            disabled={!canAssignAttributes}
+          >
+            Assign Attributes
+          </button>
+        )}
         {onDuplicateSelected && (
           <button
             className="btn btn-secondary"

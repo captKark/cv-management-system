@@ -27,6 +27,8 @@ function PositionTable({
 
                 <th className="text-nowrap">Department</th>
 
+                <th className="text-nowrap">Attributes</th>
+
                 <th className="text-nowrap">Location</th>
 
                 <th className="text-nowrap">Status</th>
@@ -36,8 +38,9 @@ function PositionTable({
             <tbody>
               {positions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center text-muted py-5">
+                  <td colSpan={6} className="text-center text-muted py-5">
                     <h5 className="mb-2">No positions found</h5>
+
                     <p className="mb-0">
                       Try changing your search or create a new position.
                     </p>
@@ -61,6 +64,16 @@ function PositionTable({
                       <td>{position.title}</td>
 
                       <td>{position.department}</td>
+
+                      <td>
+                        {position.attributes?.length > 0 ? (
+                          <span className="badge bg-info">
+                            {position.attributes.length} assigned
+                          </span>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
 
                       <td>{position.location}</td>
 

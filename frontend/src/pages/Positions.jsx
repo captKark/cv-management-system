@@ -6,6 +6,7 @@ import PositionTable from "../components/PositionTable";
 import Pagination from "../components/Pagination";
 import PositionForm from "../components/PositionForm";
 import Modal from "../components/Modal";
+import AssignAttributesModal from "../components/AssignAttributesModal";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/positions`;
 const ROWS_PER_PAGE = 5;
@@ -23,34 +24,34 @@ const Positions = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [editingPosition, setEditingPosition] = useState(null);
 
   const [successMessage, setSuccessMessage] = useState("");
+  const fetchPositions = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/positions`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch positions.");
+      }
+
+      const data = await response.json();
+      setPositions(data);
+    } catch (err) {
+      console.error(err);
+      setError("Error loading positions. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPositions = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/positions`,
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch positions.");
-        }
-
-        const data = await response.json();
-        setPositions(data);
-      } catch (err) {
-        console.error(err);
-        setError("Error loading positions. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPositions();
   }, []);
 
@@ -288,6 +289,14 @@ const Positions = () => {
     }
   };
 
+  const handleOpenAssignAttributesModal = () => {
+    setIsAssignModalOpen(true);
+  };
+
+  const handleCloseAssignAttributesModal = () => {
+    setIsAssignModalOpen(false);
+  };
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center py-5">
@@ -317,6 +326,8 @@ const Positions = () => {
         canEdit={selectedPositions.length === 1}
         canDelete={selectedPositions.length > 0}
         addLabel="Add Position"
+        onAssignAttributes={handleOpenAssignAttributesModal}
+        canAssignAttributes={selectedPositions.length === 1}
       />
       {successMessage && (
         <div className="alert alert-success alert-dismissible fade show mt-3">
@@ -376,6 +387,23 @@ const Positions = () => {
             initialValues={null}
             onSubmit={handleCreatePosition}
             onClose={handleCloseAddModal}
+          />
+        </Modal>
+      )}
+
+      {isAssignModalOpen && (
+        <Modal
+          title="Assign Attributes"
+          onClose={handleCloseAssignAttributesModal}
+        >
+          <AssignAttributesModal
+            positionId={selectedPositions[0]}
+            onClose={handleCloseAssignAttributesModal}
+            onSaved={async () => {
+              await fetchPositions();
+              handleCloseAssignAttributesModal();
+              setSuccessMessage("Attributes assigned successfully.");
+            }}
           />
         </Modal>
       )}

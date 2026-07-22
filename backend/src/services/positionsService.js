@@ -1,7 +1,10 @@
 const prisma = require("../lib/prisma");
 
 const getAllPositions = async () => {
-  return await prisma.position.findMany({
+  return prisma.position.findMany({
+    include: {
+      attributes: true,
+    },
     orderBy: {
       id: "asc",
     },
