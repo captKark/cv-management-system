@@ -20,4 +20,4 @@ app.use("/api/auth", authRoutes);
 app.use("/api/positions", positionsRoutes);
 app.use("/api/cvs", cvsRoutes);
 
-module.exports = app;
+module.exports = app;   
