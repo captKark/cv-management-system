@@ -9,7 +9,7 @@ import About from "./pages/About";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
-
+import Attributes from "./pages/Attributes";
 import MainLayout from "./layout/MainLayout";
 
 function App() {
@@ -46,6 +46,7 @@ function App() {
           {/* Admin only */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/templates" element={<Templates />} />
+            <Route path="/attributes" element={<Attributes />} />
           </Route>
         </Route>
 

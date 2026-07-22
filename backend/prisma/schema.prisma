@@ -23,3 +23,10 @@ model CV {
   status        String
   updatedAt     String
 }
+model Attribute {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  category   String
+  type       String
+  createdAt  DateTime @default(now())
+}

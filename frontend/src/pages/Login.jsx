@@ -116,162 +116,158 @@ function Login() {
               )}
 
               <div className="alert alert-info mb-4">
-  <div className="fw-semibold mb-3">
-    Demo Accounts
-  </div>
+                <div className="fw-semibold mb-3">Demo Accounts</div>
 
-  <div className="d-grid gap-2">
-    <button
-      type="button"
-      className="btn btn-outline-primary btn-sm text-start"
-      onClick={() => fillDemoAccount("admin")}
-    >
-      <strong>Administrator</strong>
-      <br />
-      <small>admin@test.com</small>
-    </button>
-
-    <button
-      type="button"
-      className="btn btn-outline-success btn-sm text-start"
-      onClick={() => fillDemoAccount("recruiter")}
-    >
-      <strong>Recruiter</strong>
-      <br />
-      <small>recruiter@test.com</small>
-    </button>
-
-    <button
-      type="button"
-      className="btn btn-outline-secondary btn-sm text-start"
-      onClick={() => fillDemoAccount("candidate")}
-    >
-      <strong>Candidate</strong>
-      <br />
-      <small>candidate@test.com</small>
-    </button>
-  </div>
-</div>
-                <div className="fw-semibold mb-2">Demo Accounts</div>
-
-                <div className="d-flex flex-wrap gap-2">
+                <div className="d-grid gap-2">
                   <button
                     type="button"
-                    className="btn btn-outline-primary btn-sm"
+                    className="btn btn-outline-primary btn-sm text-start"
                     onClick={() => fillDemoAccount("admin")}
                   >
-                    Admin
+                    <strong>Administrator</strong>
+                    <br />
+                    <small>admin@test.com</small>
                   </button>
 
                   <button
                     type="button"
-                    className="btn btn-outline-success btn-sm"
+                    className="btn btn-outline-success btn-sm text-start"
                     onClick={() => fillDemoAccount("recruiter")}
                   >
-                    Recruiter
+                    <strong>Recruiter</strong>
+                    <br />
+                    <small>recruiter@test.com</small>
                   </button>
 
                   <button
                     type="button"
-                    className="btn btn-outline-secondary btn-sm"
+                    className="btn btn-outline-secondary btn-sm text-start"
                     onClick={() => fillDemoAccount("candidate")}
                   >
-                    Candidate
+                    <strong>Candidate</strong>
+                    <br />
+                    <small>candidate@test.com</small>
+                  </button>
+                </div>
+              </div>
+              <div className="fw-semibold mb-2">Demo Accounts</div>
+
+              <div className="d-flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={() => fillDemoAccount("admin")}
+                >
+                  Admin
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline-success btn-sm"
+                  onClick={() => fillDemoAccount("recruiter")}
+                >
+                  Recruiter
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() => fillDemoAccount("candidate")}
+                >
+                  Candidate
+                </button>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label fw-semibold">Email Address</label>
+
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <i className="bi bi-envelope-fill"></i>
+                  </span>
+
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="form-label fw-semibold">Password</label>
+
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <i className="bi bi-lock-fill"></i>
+                  </span>
+
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <i
+                      className={`bi ${
+                        showPassword ? "bi-eye-slash-fill" : "bi-eye-fill"
+                      }`}
+                    ></i>
                   </button>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold">
-                    Email Address
-                  </label>
+              <button
+                type="submit"
+                className="btn btn-primary btn-lg w-100 shadow-sm"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Signing In...
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-box-arrow-in-right me-2"></i>
+                    Sign In
+                  </>
+                )}
+              </button>
+            </form>
 
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <i className="bi bi-envelope-fill"></i>
-                    </span>
+            <hr className="my-4" />
 
-                    <input
-                      type="email"
-                      className="form-control"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
+            <div className="text-center text-muted small">
+              <div className="fw-semibold">CV Management System</div>
 
-                <div className="mb-4">
-                  <label className="form-label fw-semibold">Password</label>
+              <div>Recruitment Platform</div>
 
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <i className="bi bi-lock-fill"></i>
-                    </span>
-
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      className="form-control"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      <i
-                        className={`bi ${
-                          showPassword ? "bi-eye-slash-fill" : "bi-eye-fill"
-                        }`}
-                      ></i>
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn btn-primary btn-lg w-100 shadow-sm"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Signing In...
-                    </>
-                  ) : (
-                    <>
-                      <i className="bi bi-box-arrow-in-right me-2"></i>
-                      Sign In
-                    </>
-                  )}
-                </button>
-              </form>
-
-              <hr className="my-4" />
-
-              <div className="text-center text-muted small">
-                <div className="fw-semibold">CV Management System</div>
-
-                <div>Recruitment Platform</div>
-
-                <div className="mt-2">
-                  Built with React • Express • Prisma • PostgreSQL
-                </div>
+              <div className="mt-2">
+                Built with React • Express • Prisma • PostgreSQL
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   );
 }
 

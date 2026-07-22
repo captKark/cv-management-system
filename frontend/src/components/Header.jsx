@@ -39,6 +39,18 @@ function Header() {
                 <NavLink className="nav-link" to="/positions">
                   Positions
                 </NavLink>
+              </>
+            )}
+
+            <NavLink className="nav-link" to="/cvs">
+              CVs
+            </NavLink>
+
+            {user?.role === "admin" && (
+              <>
+                <NavLink className="nav-link" to="/attributes">
+                  Attributes
+                </NavLink>
 
                 <NavLink className="nav-link" to="/templates">
                   Templates
@@ -46,16 +58,14 @@ function Header() {
               </>
             )}
 
-            <NavLink className="nav-link" to="/cvs">
-              CVs
+            <NavLink className="nav-link" to="/about">
+              About
             </NavLink>
           </div>
 
           {user && (
             <div className="d-flex align-items-center gap-3">
-              <span className="text-white">
-                {user.name}
-              </span>
+              <span className="text-white">{user.name}</span>
 
               <button
                 className="btn btn-outline-light btn-sm"
