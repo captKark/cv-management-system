@@ -1,27 +1,46 @@
 function Toolbar({
   onAdd,
   onEditSelected,
-  onDuplicateSelected,
   onDeleteSelected,
+  onDuplicateSelected,
   canEdit,
   canDelete,
   canDuplicate,
   addLabel,
 }) {
   return (
-    <div>
-      <button onClick={onAdd}>{addLabel}</button>
+    <div className="card shadow-sm mb-3">
+      <div className="d-flex flex-wrap gap-2 mb-4">
+        <button className="btn btn-primary" onClick={onAdd}>
+          + {addLabel}
+        </button>
 
-      <button onClick={onEditSelected} disabled={!canEdit}>
-        Edit Selected
-      </button>
+        <button
+          className="btn btn-warning"
+          onClick={onEditSelected}
+          disabled={!canEdit}
+        >
+          Edit Selected
+        </button>
 
-      <button onClick={onDeleteSelected} disabled={!canDelete}>
-        Delete Selected
-      </button> 
-      <button onClick={onDuplicateSelected} disabled={!canDuplicate}>
-        Duplicate Selected
-      </button>
+        {onDuplicateSelected && (
+          <button
+            className="btn btn-secondary"
+            onClick={onDuplicateSelected}
+            disabled={!canDuplicate}
+          >
+            Duplicate Selected
+          </button>
+        )}
+
+        <button
+          className="btn btn-danger"
+          onClick={onDeleteSelected}
+          disabled={!canDelete}
+        >
+          Delete Selected
+        </button>
+      </div>
     </div>
   );
 }

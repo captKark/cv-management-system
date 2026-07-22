@@ -1,38 +1,58 @@
 function Pagination({ currentPage, totalPages, onPageChange }) {
+  if (totalPages <= 1) {
+    return null;
+  }
+
   const pageNumbers = [];
+
   for (let page = 1; page <= totalPages; page++) {
     pageNumbers.push(page);
   }
 
   return (
-    <div>
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        Previous
-      </button>
+    <nav className="mt-4 d-flex justify-content-center">
+      <ul className="pagination shadow-sm">
+        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+          <button
+            className="page-link"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+        </li>
 
-      {pageNumbers.map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          disabled={page === currentPage}
-          style={{
-            backgroundColor: page === currentPage ? "blue" : "white",
-          }}
+        {pageNumbers.map((page) => (
+          <li
+            key={page}
+            className={`page-item ${
+              page === currentPage ? "active" : ""
+            }`}
+          >
+            <button
+              className="page-link"
+              onClick={() => onPageChange(page)}
+            >
+              {page}
+            </button>
+          </li>
+        ))}
+
+        <li
+          className={`page-item ${
+            currentPage === totalPages ? "disabled" : ""
+          }`}
         >
-          {page}
-        </button>
-      ))}
-
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages || totalPages === 0}
-      >
-        Next
-      </button>
-    </div>
+          <button
+            className="page-link"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </li>
+      </ul>
+    </nav>
   );
 }
 

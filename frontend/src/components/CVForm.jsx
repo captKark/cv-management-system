@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { CV_STATUSES } from "../constants/status";
 
-function CVForm({ initialValues, positions, onSubmit, onClose }) {
+function CVForm({ positions, initialValues, onSubmit, onClose }) {
   const [candidateName, setCandidateName] = useState(
     initialValues?.candidateName ?? "",
   );
@@ -10,6 +11,7 @@ function CVForm({ initialValues, positions, onSubmit, onClose }) {
   );
 
   const [status, setStatus] = useState(initialValues?.status ?? "");
+
   const [positionId, setPositionId] = useState(initialValues?.positionId ?? "");
 
   const handleSubmit = (e) => {
@@ -30,61 +32,86 @@ function CVForm({ initialValues, positions, onSubmit, onClose }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{initialValues ? "Edit CV" : "Create CV"}</h2>
+    <div className="card shadow-sm mt-4 mx-auto" style={{ maxWidth: "700px" }}>
+      <div className="card-body">
+        <h2 className="card-title mb-4">
+          {initialValues ? "Edit CV" : "Create CV"}
+        </h2>
 
-      <div>
-        <label>Candidate Name</label>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Candidate Name</label>
 
-        <input
-          type="text"
-          value={candidateName}
-          onChange={(e) => setCandidateName(e.target.value)}
-        />
+            <input
+              type="text"
+              className="form-control"
+              value={candidateName}
+              onChange={(e) => setCandidateName(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Position</label>
+
+            <select
+              className="form-select"
+              value={positionId}
+              onChange={(e) => {
+                const selectedId = Number(e.target.value);
+
+                const selectedPosition = positions.find(
+                  (position) => position.id === selectedId,
+                );
+
+                setPositionId(selectedId);
+
+                setPositionTitle(selectedPosition?.title ?? "");
+              }}
+            >
+              <option value="">Select Position</option>
+
+              {positions.map((position) => (
+                <option key={position.id} value={position.id}>
+                  {position.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="form-label">Status</label>
+
+            <select
+              className="form-select"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="">Select status</option>
+
+              {CV_STATUSES.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="d-flex justify-content-end gap-2">
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+
+            <button type="submit" className="btn btn-primary">
+              {initialValues ? "Update" : "Create"}
+            </button>
+          </div>
+        </form>
       </div>
-
-      <div>
-        <label>Position</label>
-
-        <select
-          value={positionId}
-          onChange={(e) => {
-            const selectedId = Number(e.target.value);
-
-            const selectedPosition = positions.find(
-              (position) => position.id === selectedId,
-            );
-
-            setPositionId(selectedId);
-            setPositionTitle(selectedPosition?.title ?? "");
-          }}
-        >
-          <option value="">Select Position</option>
-
-          {positions.map((position) => (
-            <option key={position.id} value={position.id}>
-              {position.title}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Status</label>
-
-        <input
-          type="text"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        />
-      </div>
-
-      <button type="submit">{initialValues ? "Update" : "Create"}</button>
-
-      <button type="button" onClick={onClose}>
-        Cancel
-      </button>
-    </form>
+    </div>
   );
 }
 

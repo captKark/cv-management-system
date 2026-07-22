@@ -5,7 +5,10 @@ function MainLayout() {
   return (
     <>
       <Header />
-      <Outlet />
+
+      <main className="container py-4">
+        <Outlet />
+      </main>
     </>
   );
 }

@@ -5,6 +5,7 @@ import DepartmentFilter from "../components/DepartmentFilter";
 import PositionTable from "../components/PositionTable";
 import Pagination from "../components/Pagination";
 import PositionForm from "../components/PositionForm";
+import Modal from "../components/Modal";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/positions`;
 const ROWS_PER_PAGE = 5;
@@ -23,6 +24,8 @@ const Positions = () => {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingPosition, setEditingPosition] = useState(null);
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -121,6 +124,15 @@ const Positions = () => {
     }
   }, [currentPage, totalPages]);
 
+  useEffect(() => {
+    if (!successMessage) return;
+
+    const timer = setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [successMessage]);
   // ---------- Delete ----------
 
   const handleDeleteSelected = async () => {
@@ -151,6 +163,7 @@ const Positions = () => {
       setPositions((prev) =>
         prev.filter((position) => !selectedPositions.includes(position.id)),
       );
+      setSuccessMessage("Position(s) deleted successfully.");
 
       setSelectedPositions([]);
     } catch (err) {
@@ -189,7 +202,7 @@ const Positions = () => {
       const createdPosition = await response.json();
 
       setPositions((prev) => [...prev, createdPosition]);
-
+      setSuccessMessage("Position created successfully.");
       handleCloseAddModal();
     } catch (err) {
       console.error(err);
@@ -237,6 +250,7 @@ const Positions = () => {
           position.id === updatedPosition.id ? updatedPosition : position,
         ),
       );
+      setSuccessMessage("Position updated successfully.");
 
       handleCloseEditModal();
       setSelectedPositions([]);
@@ -266,7 +280,7 @@ const Positions = () => {
       const duplicatedPosition = await response.json();
 
       setPositions((prev) => [...prev, duplicatedPosition]);
-
+      setSuccessMessage("Position duplicated successfully.");
       setSelectedPositions([]);
     } catch (err) {
       console.error(err);
@@ -275,15 +289,25 @@ const Positions = () => {
   };
 
   if (loading) {
-    return <p>Loading positions...</p>;
+    return (
+      <div className="d-flex justify-content-center py-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <div className="alert alert-danger mt-3">{error}</div>;
   }
 
   return (
-    <>
+    <div className="container py-4">
+      <div className="mb-4">
+        <h2 className="fw-bold">Positions</h2>
+        <p className="text-muted mb-0">Manage available job positions.</p>
+      </div>
       <Toolbar
         onAdd={handleOpenAddModal}
         onDuplicateSelected={handleDuplicateSelected}
@@ -294,10 +318,33 @@ const Positions = () => {
         canDelete={selectedPositions.length > 0}
         addLabel="Add Position"
       />
+      {successMessage && (
+        <div className="alert alert-success alert-dismissible fade show mt-3">
+          {successMessage}
 
-      <Searchbar searchText={searchText} setSearchText={setSearchText} />
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setSuccessMessage("")}
+          />
+        </div>
+      )}
+      <div className="row mb-3">
+        <div className="col-md-8">
+          <Searchbar
+            searchText={searchText}
+            setSearchText={setSearchText}
+            placeholder="Search by title or department..."
+          />
+        </div>
 
-      <DepartmentFilter department={department} setDepartment={setDepartment} />
+        <div className="col-md-4">
+          <DepartmentFilter
+            department={department}
+            setDepartment={setDepartment}
+          />
+        </div>
+      </div>
 
       <PositionTable
         positions={currentPagePositions}
@@ -313,22 +360,26 @@ const Positions = () => {
         onPageChange={handlePageChange}
       />
 
-      {editingPosition ? (
-        <PositionForm
-          initialValues={editingPosition}
-          onSubmit={handleUpdatePosition}
-          onClose={handleCloseEditModal}
-        />
-      ) : (
-        isAddModalOpen && (
+      {editingPosition && (
+        <Modal title="Edit Position" onClose={handleCloseEditModal}>
+          <PositionForm
+            initialValues={editingPosition}
+            onSubmit={handleUpdatePosition}
+            onClose={handleCloseEditModal}
+          />
+        </Modal>
+      )}
+
+      {isAddModalOpen && (
+        <Modal title="Add Position" onClose={handleCloseAddModal}>
           <PositionForm
             initialValues={null}
             onSubmit={handleCreatePosition}
             onClose={handleCloseAddModal}
           />
-        )
+        </Modal>
       )}
-    </>
+    </div>
   );
 };
 

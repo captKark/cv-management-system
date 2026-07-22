@@ -8,4 +8,7 @@ export const POSITION_STATUSES = [
 export const CV_STATUSES = [
   "Draft",
   "Submitted",
+  "Interviewing",
+  "Rejected",
+  "Accepted",
 ];

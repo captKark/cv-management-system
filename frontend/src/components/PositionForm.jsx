@@ -31,20 +31,22 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>{initialValues ? "Edit Position" : "Add Position"}</h2>
+      <div className="mb-3">
+        <label className="form-label">Title</label>
 
-      <div>
-        <label>Title</label>
         <input
           type="text"
+          className="form-control"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
 
-      <div>
-        <label>Department</label>
+      <div className="mb-3">
+        <label className="form-label">Department</label>
+
         <select
+          className="form-select"
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
         >
@@ -58,18 +60,25 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
         </select>
       </div>
 
-      <div>
-        <label>Location</label>
+      <div className="mb-3">
+        <label className="form-label">Location</label>
+
         <input
           type="text"
+          className="form-control"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
       </div>
 
-      <div>
-        <label>Status</label>
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+      <div className="mb-4">
+        <label className="form-label">Status</label>
+
+        <select
+          className="form-select"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
           <option value="">Select status</option>
 
           {POSITION_STATUSES.map((status) => (
@@ -80,11 +89,19 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
         </select>
       </div>
 
-      <button type="submit">{initialValues ? "Update" : "Create"}</button>
+      <div className="d-flex justify-content-end gap-2">
+        <button
+          type="button"
+          className="btn btn-outline-secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
 
-      <button type="button" onClick={onClose}>
-        Cancel
-      </button>
+        <button type="submit" className="btn btn-primary">
+          {initialValues ? "Update" : "Create"}
+        </button>
+      </div>
     </form>
   );
 }

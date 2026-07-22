@@ -205,6 +205,15 @@ function CVs() {
     }
   }, [currentPage, totalPages]);
 
+  useEffect(() => {
+    if (!successMessage) return;
+
+    const timer = setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [successMessage]);
   if (loading) {
     return <p>Loading CVs...</p>;
   }
@@ -214,7 +223,11 @@ function CVs() {
   }
 
   return (
-    <>
+    <div className="container py-4">
+      <div className="mb-4">
+        <h2 className="fw-bold">CV Management</h2>
+        <p className="text-muted mb-0">Create and manage candidate CVs.</p>
+      </div>
       <Toolbar
         onAdd={handleOpenAddModal}
         onEditSelected={handleOpenEditModal}
@@ -224,7 +237,11 @@ function CVs() {
         addLabel="Add CV"
       />
 
-      <Searchbar searchText={searchText} setSearchText={setSearchText} />
+      <Searchbar
+        searchText={searchText}
+        setSearchText={setSearchText}
+        placeholder="Search by candidate or position..."
+      />
 
       <CVTable
         cvs={currentPageCVs}
@@ -256,7 +273,7 @@ function CVs() {
           />
         )
       )}
-    </>
+    </div>
   );
 }
 

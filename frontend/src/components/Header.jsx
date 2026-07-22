@@ -1,11 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { USER_STORAGE_KEY } from "../constants/storage";
-import { hasRole, getCurrentUser } from "../utils/auth";
 
 function Header() {
   const navigate = useNavigate();
 
-  const user = getCurrentUser();
+  const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
   const handleLogout = () => {
     localStorage.removeItem(USER_STORAGE_KEY);
@@ -13,27 +13,61 @@ function Header() {
   };
 
   return (
-    <header>
-      <nav>
-        <Link to="/dashboard">Dashboard</Link>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+      <div className="container">
+        <Link className="navbar-brand fw-bold" to="/dashboard">
+          CV Management System
+        </Link>
 
-        {hasRole("admin", "recruiter") && (
-          <Link to="/positions">Positions</Link>
-        )}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-        <Link to="/cvs">CVs</Link>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <div className="navbar-nav me-auto">
+            <NavLink className="nav-link" to="/dashboard">
+              Dashboard
+            </NavLink>
 
-        {hasRole("admin") && <Link to="/templates">Templates</Link>}
-      </nav>
+            {(user?.role === "admin" || user?.role === "recruiter") && (
+              <>
+                <NavLink className="nav-link" to="/positions">
+                  Positions
+                </NavLink>
 
-      {user && (
-        <div>
-          <span>{user.name}</span>
+                <NavLink className="nav-link" to="/templates">
+                  Templates
+                </NavLink>
+              </>
+            )}
 
-          <button onClick={handleLogout}>Logout</button>
+            <NavLink className="nav-link" to="/cvs">
+              CVs
+            </NavLink>
+          </div>
+
+          {user && (
+            <div className="d-flex align-items-center gap-3">
+              <span className="text-white">
+                {user.name}
+              </span>
+
+              <button
+                className="btn btn-outline-light btn-sm"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
-      )}
-    </header>
+      </div>
+    </nav>
   );
 }
 

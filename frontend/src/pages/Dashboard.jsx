@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { USER_STORAGE_KEY } from "../constants/storage";
+import StatCard from "../components/StatCard";
 
 const POSITIONS_API = `${import.meta.env.VITE_API_URL}/api/positions`;
 const CVS_API = `${import.meta.env.VITE_API_URL}/api/cvs`;
@@ -65,35 +66,68 @@ function Dashboard() {
   if (error) {
     return <p>{error}</p>;
   }
-
   return (
-    <>
-      <h1>Dashboard</h1>
+<div className="container py-4">
+      <div className="card shadow-sm mb-4">
+        <div className="card-body">
+          <h2 className="card-title mb-2">Welcome, {user?.name}</h2>
 
-      <p>Welcome {user?.name}</p>
+          <p className="text-muted mb-0">
+            Role: <strong>{user?.role}</strong>
+          </p>
+        </div>
+      </div>
 
-      <p>Role: {user?.role}</p>
+      <div className="row g-4 mb-4">
+        <StatCard title="Total Positions" value={positionStats.total} />
 
-      <hr />
+        <StatCard title="Active Positions" value={positionStats.active} />
 
-      <h2>Positions</h2>
+        <StatCard title="Closed Positions" value={positionStats.closed} />
 
-      <p>Total: {positionStats.total}</p>
+        <StatCard title="Total CVs" value={cvStats.total} />
 
-      <p>Active: {positionStats.active}</p>
+        <StatCard title="Draft CVs" value={cvStats.draft} />
 
-      <p>Closed: {positionStats.closed}</p>
+        <StatCard title="Submitted CVs" value={cvStats.submitted} />
+      </div>
 
-      <hr />
+      <div className="row g-4">
+        <div className="col-lg-6">
+          <div className="card shadow-sm">
+            <div className="card-header">Recent Positions</div>
 
-      <h2>CVs</h2>
+            <ul className="list-group list-group-flush">
+              {positions
+                .slice(-5)
+                .reverse()
+                .map((position) => (
+                  <li key={position.id} className="list-group-item">
+                    {position.title}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
 
-      <p>Total: {cvStats.total}</p>
+        <div className="col-lg-6">
+          <div className="card shadow-sm">
+            <div className="card-header">Recent CVs</div>
 
-      <p>Draft: {cvStats.draft}</p>
-
-      <p>Submitted: {cvStats.submitted}</p>
-    </>
+            <ul className="list-group list-group-flush">
+              {cvs
+                .slice(-5)
+                .reverse()
+                .map((cv) => (
+                  <li key={cv.id} className="list-group-item">
+                    {cv.candidateName}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 export default Dashboard;
