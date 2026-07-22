@@ -18,6 +18,10 @@ const createPosition = async (position) => {
       department: position.department,
       location: position.location,
       status: position.status,
+      visibility: position.visibility,
+      projectTag: position.projectTag || null,
+      maxProjects: Number(position.maxProjects),
+      description: position.description || null,
     },
   });
 };
@@ -42,6 +46,10 @@ const updatePosition = async (id, updatedData) => {
       department: updatedData.department,
       location: updatedData.location,
       status: updatedData.status,
+      visibility: updatedData.visibility,
+      projectTag: updatedData.projectTag || null,
+      maxProjects: Number(updatedData.maxProjects),
+      description: updatedData.description || null,
     },
   });
 };

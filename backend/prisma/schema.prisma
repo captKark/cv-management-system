@@ -8,13 +8,18 @@ datasource db {
 }
 
 model Position {
-  id         Int    @id @default(autoincrement())
-  title      String
-  department String
-  location   String
-  status     String
+  id          Int      @id @default(autoincrement())
+  title       String
+  department  String
+  location    String
+  status      String
 
-  attributes PositionAttribute[]
+  visibility  String   @default("Public")
+  projectTag  String?
+  maxProjects Int      @default(5)
+  description String?
+
+  attributes  PositionAttribute[]
 }
 
 model CV {

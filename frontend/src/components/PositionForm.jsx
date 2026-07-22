@@ -7,6 +7,19 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
   const [department, setDepartment] = useState(initialValues?.department ?? "");
   const [location, setLocation] = useState(initialValues?.location ?? "");
   const [status, setStatus] = useState(initialValues?.status ?? "");
+  const [visibility, setVisibility] = useState(
+    initialValues?.visibility ?? "Public",
+  );
+
+  const [projectTag, setProjectTag] = useState(initialValues?.projectTag ?? "");
+
+  const [maxProjects, setMaxProjects] = useState(
+    initialValues?.maxProjects ?? 5,
+  );
+
+  const [description, setDescription] = useState(
+    initialValues?.description ?? "",
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,7 +28,8 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
       !title.trim() ||
       !department.trim() ||
       !location.trim() ||
-      !status.trim()
+      !status.trim() ||
+      !visibility.trim()
     ) {
       alert("All fields are required.");
       return;
@@ -26,6 +40,11 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
       department: department.trim(),
       location: location.trim(),
       status: status.trim(),
+
+      visibility,
+      projectTag: projectTag.trim(),
+      maxProjects: Number(maxProjects),
+      description: description.trim(),
     });
   };
 
@@ -87,6 +106,52 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">Visibility</label>
+
+        <select
+          className="form-select"
+          value={visibility}
+          onChange={(e) => setVisibility(e.target.value)}
+        >
+          <option value="Public">Public</option>
+          <option value="Restricted">Restricted</option>
+        </select>
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Project Tag</label>
+
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Frontend, AI, Finance..."
+          value={projectTag}
+          onChange={(e) => setProjectTag(e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Maximum Projects</label>
+
+        <input
+          type="number"
+          min="1"
+          className="form-control"
+          value={maxProjects}
+          onChange={(e) => setMaxProjects(e.target.value)}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="form-label">Template Description</label>
+
+        <textarea
+          rows="3"
+          className="form-control"
+          placeholder="Describe this position template..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
       </div>
 
       <div className="d-flex justify-content-end gap-2">
