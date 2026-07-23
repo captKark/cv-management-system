@@ -7,6 +7,7 @@ import Pagination from "../components/Pagination";
 import PositionForm from "../components/PositionForm";
 import Modal from "../components/Modal";
 import AssignAttributesModal from "../components/AssignAttributesModal";
+import PositionAttributesModal from "../components/PositionAttributesModal";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/positions`;
 const ROWS_PER_PAGE = 5;
@@ -25,6 +26,7 @@ const Positions = () => {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [viewingPosition, setViewingPosition] = useState(null);
   const [editingPosition, setEditingPosition] = useState(null);
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -296,7 +298,19 @@ const Positions = () => {
   const handleCloseAssignAttributesModal = () => {
     setIsAssignModalOpen(false);
   };
+  const handleOpenAttributesView = () => {
+    const position = positions.find(
+      (position) => position.id === selectedPositions[0],
+    );
 
+    if (!position) return;
+
+    setViewingPosition(position);
+  };
+
+  const handleCloseAttributesView = () => {
+    setViewingPosition(null);
+  };
   if (loading) {
     return (
       <div className="d-flex justify-content-center py-5">
@@ -328,6 +342,8 @@ const Positions = () => {
         addLabel="Add Position"
         onAssignAttributes={handleOpenAssignAttributesModal}
         canAssignAttributes={selectedPositions.length === 1}
+        onViewAttributes={handleOpenAttributesView}
+        canViewAttributes={selectedPositions.length === 1}
       />
       {successMessage && (
         <div className="alert alert-success alert-dismissible fade show mt-3">
@@ -405,6 +421,11 @@ const Positions = () => {
               setSuccessMessage("Attributes assigned successfully.");
             }}
           />
+        </Modal>
+      )}
+      {viewingPosition && (
+        <Modal title="Assigned Attributes" onClose={handleCloseAttributesView}> 
+          <PositionAttributesModal position={viewingPosition} />
         </Modal>
       )}
     </div>

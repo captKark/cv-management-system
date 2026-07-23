@@ -32,7 +32,7 @@ function Toolbar({
             onClick={onViewAttributes}
             disabled={!canViewAttributes}
           >
-            View Attributes 
+            View Attributes
           </button>
         )}
         {onAssignAttributes && (
@@ -51,6 +51,15 @@ function Toolbar({
             disabled={!canDuplicate}
           >
             Duplicate Selected
+          </button>
+        )}
+        {onViewAttributes && (
+          <button
+            className="btn btn-info"
+            onClick={onViewAttributes}
+            disabled={!canViewAttributes}
+          >
+            View Attributes
           </button>
         )}
 

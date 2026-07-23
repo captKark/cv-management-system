@@ -1,9 +1,13 @@
 const prisma = require("../lib/prisma");
 
 const getAllPositions = async () => {
-  return prisma.position.findMany({
+  return await prisma.position.findMany({
     include: {
-      attributes: true,
+      attributes: {
+        include: {
+          attribute: true,
+        },
+      },
     },
     orderBy: {
       id: "asc",
@@ -104,5 +108,5 @@ module.exports = {
   updatePosition,
   deletePositions,
   duplicatePosition,
-  getPositionTemplate 
+  getPositionTemplate,
 };
