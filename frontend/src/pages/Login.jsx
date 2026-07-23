@@ -11,6 +11,9 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  
+  // Track which demo button is currently active
+  const [activeDemoRole, setActiveDemoRole] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,17 +33,16 @@ function Login() {
             email,
             password,
           }),
-        },
+        }
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message);
+        throw new Error(data.message || "Failed to log in.");
       }
 
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data));
-
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);
@@ -50,218 +52,198 @@ function Login() {
   };
 
   const fillDemoAccount = (role) => {
+    setActiveDemoRole(role); // Highlight clicked button
+
     switch (role) {
       case "admin":
         setEmail("admin@test.com");
         setPassword("admin123");
         break;
-
       case "recruiter":
         setEmail("recruiter@test.com");
         setPassword("recruit123");
         break;
-
       case "candidate":
         setEmail("candidate@test.com");
         setPassword("candidate123");
         break;
-
       default:
         break;
     }
+  };
+
+  // Reset active state if user manually changes email or password
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setActiveDemoRole(null);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setActiveDemoRole(null);
   };
 
   return (
     <div
       className="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-5"
       style={{
-        background: "linear-gradient(135deg, #0d6efd 0%, #6ea8fe 100%)",
+        background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
       }}
     >
       <div className="row justify-content-center w-100">
-        <div className="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
+        <div className="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
           <div
             className="card border-0 shadow-lg"
             style={{
-              borderRadius: "18px",
+              borderRadius: "20px",
+              backdropFilter: "blur(10px)",
+              backgroundColor: "#ffffff",
             }}
           >
-            <div className="card-body p-4 p-lg-5">
+            <div className="card-body p-4 p-sm-5">
+              {/* Header / Brand */}
               <div className="text-center mb-4">
                 <div
-                  className="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center shadow mb-3"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                  }}
+                  className="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                  style={{ width: "64px", height: "64px" }}
                 >
-                  <i
-                    className="bi bi-file-earmark-person-fill text-white"
-                    style={{ fontSize: "2rem" }}
-                  ></i>
+                  <i className="bi bi-file-earmark-person fs-2"></i>
                 </div>
-
-                <h2 className="fw-bold mb-2">CV Management System</h2>
-
-                <p className="text-muted mb-0">
-                  Manage Positions & Candidate CVs
+                <h3 className="fw-bold text-dark mb-1">Welcome Back</h3>
+                <p className="text-muted small">
+                  Manage positions & candidate CVs efficiently
                 </p>
               </div>
 
+              {/* Error Alert */}
               {error && (
-                <div className="alert alert-danger text-center">
-                  <i className="bi bi-exclamation-triangle-fill me-2"></i>
-                  {error}
+                <div
+                  className="alert alert-danger d-flex align-items-center small py-2 px-3 mb-4 rounded-3"
+                  role="alert"
+                >
+                  <i className="bi bi-exclamation-triangle-fill me-2 fs-6"></i>
+                  <div>{error}</div>
                 </div>
               )}
 
-              <div className="alert alert-info mb-4">
-                <div className="fw-semibold mb-3">Demo Accounts</div>
-
-                <div className="d-grid gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary btn-sm text-start"
-                    onClick={() => fillDemoAccount("admin")}
+              {/* Demo Quick Fill Badges */}
+              <div className="bg-light p-3 rounded-3 mb-4 border">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <span
+                    className="text-uppercase fw-bold text-muted extra-small"
+                    style={{ fontSize: "0.75rem" }}
                   >
-                    <strong>Administrator</strong>
-                    <br />
-                    <small>admin@test.com</small>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-outline-success btn-sm text-start"
-                    onClick={() => fillDemoAccount("recruiter")}
-                  >
-                    <strong>Recruiter</strong>
-                    <br />
-                    <small>recruiter@test.com</small>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-sm text-start"
-                    onClick={() => fillDemoAccount("candidate")}
-                  >
-                    <strong>Candidate</strong>
-                    <br />
-                    <small>candidate@test.com</small>
-                  </button>
-                </div>
-              </div>
-              <div className="fw-semibold mb-2">Demo Accounts</div>
-
-              <div className="d-flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary btn-sm"
-                  onClick={() => fillDemoAccount("admin")}
-                >
-                  Admin
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-outline-success btn-sm"
-                  onClick={() => fillDemoAccount("recruiter")}
-                >
-                  Recruiter
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary btn-sm"
-                  onClick={() => fillDemoAccount("candidate")}
-                >
-                  Candidate
-                </button>
-              </div>
-            </div>
-
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label className="form-label fw-semibold">Email Address</label>
-
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="bi bi-envelope-fill"></i>
+                    Quick Demo Access
                   </span>
-
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+                  <i className="bi bi-lightning-charge-fill text-warning"></i>
+                </div>
+                <div className="d-flex gap-2 flex-wrap">
+                  {["admin", "recruiter", "candidate"].map((role) => {
+                    const isActive = activeDemoRole === role;
+                    return (
+                      <button
+                        key={role}
+                        type="button"
+                        className={`btn btn-sm flex-fill rounded-pill transition-all ${
+                          isActive
+                            ? "btn-primary shadow-sm fw-bold"
+                            : "btn-white border text-secondary shadow-sm fw-medium"
+                        }`}
+                        onClick={() => fillDemoAccount(role)}
+                      >
+                        {isActive && <i className="bi bi-check2 me-1"></i>}
+                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="form-label fw-semibold">Password</label>
-
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="bi bi-lock-fill"></i>
-                  </span>
-
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    className="form-control"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    <i
-                      className={`bi ${
-                        showPassword ? "bi-eye-slash-fill" : "bi-eye-fill"
-                      }`}
-                    ></i>
-                  </button>
+              {/* Login Form */}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label className="form-label fw-semibold text-secondary small mb-1">
+                    Email Address
+                  </label>
+                  <div className="input-group">
+                    <span className="input-group-text bg-light border-end-0 text-muted">
+                      <i className="bi bi-envelope"></i>
+                    </span>
+                    <input
+                      type="email"
+                      className="form-control bg-light border-start-0"
+                      placeholder="name@company.com"
+                      value={email}
+                      onChange={handleEmailChange}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                className="btn btn-primary btn-lg w-100 shadow-sm"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Signing In...
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-box-arrow-in-right me-2"></i>
-                    Sign In
-                  </>
-                )}
-              </button>
-            </form>
+                <div className="mb-4">
+                  <label className="form-label fw-semibold text-secondary small mb-1">
+                    Password
+                  </label>
+                  <div className="input-group">
+                    <span className="input-group-text bg-light border-end-0 text-muted">
+                      <i className="bi bi-lock"></i>
+                    </span>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="form-control bg-light border-start-0 border-end-0"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={handlePasswordChange}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-light border border-start-0 text-muted"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i
+                        className={`bi ${
+                          showPassword ? "bi-eye-slash" : "bi-eye"
+                        }`}
+                      ></i>
+                    </button>
+                  </div>
+                </div>
 
-            <hr className="my-4" />
+                <button
+                  type="submit"
+                  className="btn btn-primary py-2.5 w-100 fw-semibold shadow-sm rounded-3"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Signing in...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
+                </button>
+              </form>
 
-            <div className="text-center text-muted small">
-              <div className="fw-semibold">CV Management System</div>
-
-              <div>Recruitment Platform</div>
-
-              <div className="mt-2">
-                Built with React • Express • Prisma • PostgreSQL
+              {/* Footer Info */}
+              <div className="text-center mt-4 pt-3 border-top">
+                <p
+                  className="text-muted extra-small mb-0"
+                  style={{ fontSize: "0.75rem" }}
+                >
+                  <strong>CV Management System</strong> • Recruitment Platform
+                </p>
+                <p
+                  className="text-muted extra-small mb-0"
+                  style={{ fontSize: "0.7rem" }}
+                >
+                  React • Express • Prisma • PostgreSQL
+                </p>
               </div>
             </div>
           </div>
