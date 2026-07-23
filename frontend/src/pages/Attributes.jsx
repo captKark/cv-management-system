@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { apiFetch } from "../utils/apiFetch";
 import Toolbar from "../components/Toolbar";
 import Searchbar from "../components/Searchbar";
 import Pagination from "../components/Pagination";
@@ -30,7 +31,7 @@ const Attributes = () => {
       setError(null);
 
       try {
-        const response = await fetch(API_URL);
+        const response = await apiFetch(API_URL);
 
         if (!response.ok) {
           throw new Error("Failed to fetch attributes.");
@@ -133,7 +134,7 @@ const Attributes = () => {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await apiFetch(API_URL, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -171,7 +172,7 @@ const Attributes = () => {
 
   const handleCreateAttribute = async (newAttribute) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await apiFetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -212,7 +213,7 @@ const Attributes = () => {
 
   const handleUpdateAttribute = async (updatedData) => {
     try {
-      const response = await fetch(`${API_URL}`, {
+      const response = await apiFetch(`${API_URL}/${editingAttribute.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

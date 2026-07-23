@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const users = [
   {
     id: 1,
@@ -26,7 +27,7 @@ const login = (email, password) => {
   const user = users.find(
     (user) =>
       user.email === email &&
-      user.password === password
+      user.password === password,
   );
 
   if (!user) {
@@ -35,7 +36,22 @@ const login = (email, password) => {
 
   const { password: _, ...userWithoutPassword } = user;
 
-  return userWithoutPassword;
+  const token = jwt.sign(
+    {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "8h",
+    },
+  );
+
+  return {
+    token,
+    user: userWithoutPassword,
+  };
 };
 
 module.exports = {

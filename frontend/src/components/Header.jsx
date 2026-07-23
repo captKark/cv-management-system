@@ -1,14 +1,12 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { USER_STORAGE_KEY } from "../constants/storage";
+import { getCurrentUser, logout } from "../utils/auth";
 
 function Header() {
   const navigate = useNavigate();
 
-  const storedUser = localStorage.getItem(USER_STORAGE_KEY);
-  const user = storedUser ? JSON.parse(storedUser) : null;
-
+  const user = getCurrentUser();
   const handleLogout = () => {
-    localStorage.removeItem(USER_STORAGE_KEY);
+    logout();
     navigate("/login", { replace: true });
   };
 

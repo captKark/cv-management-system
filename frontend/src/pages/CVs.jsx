@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../utils/apiFetch";
 import CVTable from "../components/CVTable";
 import Toolbar from "../components/Toolbar";
 import Searchbar from "../components/Searchbar";
@@ -32,8 +33,8 @@ function CVs() {
 
       try {
         const [cvsResponse, positionsResponse] = await Promise.all([
-          fetch(API_URL),
-          fetch(`${import.meta.env.VITE_API_URL}/api/positions`),
+          apiFetch(API_URL),
+          apiFetch(`${import.meta.env.VITE_API_URL}/api/positions`),
         ]);
 
         if (!cvsResponse.ok || !positionsResponse.ok) {
@@ -96,7 +97,7 @@ function CVs() {
 
   const handleCreateCV = async (newCV) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await apiFetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -142,7 +143,7 @@ function CVs() {
   };
   const handleUpdateCV = async (updatedData) => {
     try {
-      const response = await fetch(`${API_URL}/${editingCV.id}`, {
+      const response = await apiFetch(`${API_URL}/${editingCV.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -208,7 +209,7 @@ function CVs() {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await apiFetch(API_URL, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

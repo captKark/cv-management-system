@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { apiFetch } from "../utils/apiFetch";
 import Toolbar from "../components/Toolbar";
 import Searchbar from "../components/Searchbar";
 import DepartmentFilter from "../components/DepartmentFilter";
@@ -35,9 +36,7 @@ const Positions = () => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/positions`,
-      );
+      const response = await apiFetch(API_URL);
 
       if (!response.ok) {
         throw new Error("Failed to fetch positions.");
@@ -146,18 +145,15 @@ const Positions = () => {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/positions`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ids: selectedPositions,
-          }),
+      const response = await apiFetch(API_URL, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          ids: selectedPositions,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to delete positions.");
@@ -187,16 +183,13 @@ const Positions = () => {
 
   const handleCreatePosition = async (newPosition) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/positions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newPosition),
+      const response = await apiFetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(newPosition),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to create position.");
@@ -231,16 +224,13 @@ const Positions = () => {
 
   const handleUpdatePosition = async (updatedData) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/positions/${editingPosition.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedData),
+      const response = await apiFetch(`${API_URL}/${editingPosition.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(updatedData),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update position.");
@@ -269,7 +259,7 @@ const Positions = () => {
     }
 
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         `${API_URL}/${selectedPositions[0]}/duplicate`,
         {
           method: "POST",
@@ -424,7 +414,7 @@ const Positions = () => {
         </Modal>
       )}
       {viewingPosition && (
-        <Modal title="Assigned Attributes" onClose={handleCloseAttributesView}> 
+        <Modal title="Assigned Attributes" onClose={handleCloseAttributesView}>
           <PositionAttributesModal position={viewingPosition} />
         </Modal>
       )}

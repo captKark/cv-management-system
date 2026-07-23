@@ -3,19 +3,71 @@ const router = express.Router();
 
 const positionsController = require("../controllers/positionsController");
 const positionAttributeController = require("../controllers/positionAttributeController");
+const authenticate = require("../middleware/authenticate");
+const authorize = require("../middleware/authorize");
 
-router.get("/", positionsController.getAllPositions);
-router.post("/", positionsController.createPosition);
-router.post("/:id/duplicate", positionsController.duplicatePosition);
-router.put("/:id", positionsController.updatePosition);
-router.delete("/", positionsController.deletePositions);
+// View positions
+router.get(
+  "/",
+  authenticate,
+  authorize("admin", "recruiter", "candidate"),
+  positionsController.getAllPositions,
+);
+
+// Create position
+router.post(
+  "/",
+  authenticate,
+  authorize("admin", "recruiter"),
+  positionsController.createPosition,
+);
+
+// Duplicate position
+router.post(
+  "/:id/duplicate",
+  authenticate,
+  authorize("admin", "recruiter"),
+  positionsController.duplicatePosition,
+);
+
+// Update position
+router.put(
+  "/:id",
+  authenticate,
+  authorize("admin", "recruiter"),
+  positionsController.updatePosition,
+);
+
+// Delete position
+router.delete(
+  "/",
+  authenticate,
+  authorize("admin"),
+  positionsController.deletePositions,
+);
+
+// View assigned attributes
 router.get(
   "/:id/attributes",
+  authenticate,
+  authorize("admin", "recruiter", "candidate"),
   positionAttributeController.getPositionAttributes,
 );
-router.get("/:id/template", positionsController.getPositionTemplate);
+
+// View position template
+router.get(
+  "/:id/template",
+  authenticate,
+  authorize("admin", "recruiter", "candidate"),
+  positionsController.getPositionTemplate,
+);
+
+// Assign/update attributes
 router.put(
   "/:id/attributes",
+  authenticate,
+  authorize("admin", "recruiter"),
   positionAttributeController.updatePositionAttributes,
 );
+
 module.exports = router;

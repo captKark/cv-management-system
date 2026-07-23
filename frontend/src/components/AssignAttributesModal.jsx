@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { apiFetch } from "../utils/apiFetch";
 const ATTRIBUTES_API = `${import.meta.env.VITE_API_URL}/api/attributes`;
 const POSITIONS_API = `${import.meta.env.VITE_API_URL}/api/positions`;
 
@@ -13,10 +13,12 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
     const loadData = async () => {
       try {
         const [attributesResponse, positionResponse] = await Promise.all([
-          fetch(ATTRIBUTES_API),
-          fetch(`${POSITIONS_API}/${positionId}/attributes`),
+          apiFetch(ATTRIBUTES_API),
+          apiFetch(`${POSITIONS_API}/${positionId}/attributes`),
         ]);
-
+        if (!attributesResponse.ok || !positionResponse.ok) {
+          throw new Error("Failed to load attributes.");
+        }
         const allAttributes = await attributesResponse.json();
         const position = await positionResponse.json();
 
@@ -47,18 +49,18 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
     setSaving(true);
 
     try {
-      const response = await fetch(
-        `${POSITIONS_API}/${positionId}/attributes`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            attributeIds: selectedAttributes,
-          }),
-        },
-      );
+      const response = await apiFetch(
+  `${POSITIONS_API}/${positionId}/attributes`,
+  {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({  
+      attributeIds: selectedAttributes,
+    }),
+  },
+);
 
       if (!response.ok) {
         throw new Error("Failed to save.");
@@ -97,10 +99,7 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
             }}
           >
             {attributes.map((attribute) => (
-              <div
-                key={attribute.id}
-                className="form-check mb-2"
-              >
+              <div key={attribute.id} className="form-check mb-2">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -124,10 +123,7 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
           </div>
 
           <div className="d-flex justify-content-end gap-2 mt-4">
-            <button
-              className="btn btn-outline-secondary"
-              onClick={onClose}
-            >
+            <button className="btn btn-outline-secondary" onClick={onClose}>
               Cancel
             </button>
 

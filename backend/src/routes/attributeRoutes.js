@@ -3,13 +3,35 @@ const express = require("express");
 const router = express.Router();
 
 const attributeController = require("../controllers/attributeController");
+const authenticate = require("../middleware/authenticate");
+const authorize = require("../middleware/authorize");
 
-router.get("/", attributeController.getAllAttributes);
+router.get(
+  "/",
+  authenticate,
+  authorize("admin", "recruiter", "candidate"),
+  attributeController.getAllAttributes,
+);
 
-router.post("/", attributeController.createAttribute);
+router.post(
+  "/",
+  authenticate,
+  authorize("admin"),
+  attributeController.createAttribute,
+);
 
-router.put("/:id", attributeController.updateAttribute);
+router.put(
+  "/:id",
+  authenticate,
+  authorize("admin"),
+  attributeController.updateAttribute,
+);
 
-router.delete("/", attributeController.deleteAttributes);
+router.delete(
+  "/",
+  authenticate,
+  authorize("admin"),
+  attributeController.deleteAttributes,
+);
 
 module.exports = router;

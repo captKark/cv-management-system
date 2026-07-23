@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { apiFetch } from "../utils/apiFetch";
 const API_URL = `${import.meta.env.VITE_API_URL}/api/cvs`;
 
 function GeneratedAttributesModal({ cv, onClose, onSaved }) {
@@ -43,7 +43,7 @@ function GeneratedAttributesModal({ cv, onClose, onSaved }) {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/${cv.id}/attributes`, {
+      const response = await apiFetch(`${API_URL}/${cv.id}/attributes`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

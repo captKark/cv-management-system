@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { USER_STORAGE_KEY } from "../constants/storage";
+import { apiFetch } from "../utils/apiFetch";
+import { getCurrentUser } from "../utils/auth";
+
 import StatCard from "../components/StatCard";
 
 const POSITIONS_API = `${import.meta.env.VITE_API_URL}/api/positions`;
@@ -12,9 +14,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+  const user = getCurrentUser();
 
-  const user = storedUser ? JSON.parse(storedUser) : null;
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
@@ -22,8 +23,8 @@ function Dashboard() {
 
       try {
         const [positionsResponse, cvsResponse] = await Promise.all([
-          fetch(POSITIONS_API),
-          fetch(CVS_API),
+          apiFetch(POSITIONS_API),
+          apiFetch(CVS_API),
         ]);
 
         if (!positionsResponse.ok || !cvsResponse.ok) {
@@ -31,7 +32,6 @@ function Dashboard() {
         }
 
         const positionsData = await positionsResponse.json();
-
         const cvsData = await cvsResponse.json();
 
         setPositions(positionsData);
@@ -49,14 +49,20 @@ function Dashboard() {
 
   const positionStats = {
     total: positions.length,
-    active: positions.filter((position) => position.status === "Active").length,
-    closed: positions.filter((position) => position.status === "Closed").length,
+    active: positions.filter(
+      (position) => position.status === "Active",
+    ).length,
+    closed: positions.filter(
+      (position) => position.status === "Closed",
+    ).length,
   };
 
   const cvStats = {
     total: cvs.length,
     draft: cvs.filter((cv) => cv.status === "Draft").length,
-    submitted: cvs.filter((cv) => cv.status === "Submitted").length,
+    submitted: cvs.filter(
+      (cv) => cv.status === "Submitted",
+    ).length,
   };
 
   if (loading) {
@@ -66,11 +72,14 @@ function Dashboard() {
   if (error) {
     return <p>{error}</p>;
   }
+
   return (
-<div className="container py-4">
+    <div className="container py-4">
       <div className="card shadow-sm mb-4">
         <div className="card-body">
-          <h2 className="card-title mb-2">Welcome, {user?.name}</h2>
+          <h2 className="card-title mb-2">
+            Welcome, {user?.name}
+          </h2>
 
           <p className="text-muted mb-0">
             Role: <strong>{user?.role}</strong>
@@ -80,15 +89,10 @@ function Dashboard() {
 
       <div className="row g-4 mb-4">
         <StatCard title="Total Positions" value={positionStats.total} />
-
         <StatCard title="Active Positions" value={positionStats.active} />
-
         <StatCard title="Closed Positions" value={positionStats.closed} />
-
         <StatCard title="Total CVs" value={cvStats.total} />
-
         <StatCard title="Draft CVs" value={cvStats.draft} />
-
         <StatCard title="Submitted CVs" value={cvStats.submitted} />
       </div>
 
@@ -102,7 +106,10 @@ function Dashboard() {
                 .slice(-5)
                 .reverse()
                 .map((position) => (
-                  <li key={position.id} className="list-group-item">
+                  <li
+                    key={position.id}
+                    className="list-group-item"
+                  >
                     {position.title}
                   </li>
                 ))}
@@ -119,7 +126,10 @@ function Dashboard() {
                 .slice(-5)
                 .reverse()
                 .map((cv) => (
-                  <li key={cv.id} className="list-group-item">
+                  <li
+                    key={cv.id}
+                    className="list-group-item"
+                  >
                     {cv.candidateName}
                   </li>
                 ))}
@@ -130,4 +140,5 @@ function Dashboard() {
     </div>
   );
 }
+
 export default Dashboard;
