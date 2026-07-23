@@ -4,6 +4,8 @@ import Toolbar from "../components/Toolbar";
 import Searchbar from "../components/Searchbar";
 import Pagination from "../components/Pagination";
 import CVForm from "../components/CVForm";
+import Modal from "../components/Modal";
+import GeneratedAttributesModal from "../components/GeneratedAttributesModal";
 
 const ROWS_PER_PAGE = 5;
 const API_URL = `${import.meta.env.VITE_API_URL}/api/cvs`;
@@ -13,13 +15,14 @@ function CVs() {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [successMessage, setSuccessMessage] = useState("");
   const [searchText, setSearchText] = useState("");
   const [selectedCVs, setSelectedCVs] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [viewingCV, setViewingCV] = useState(null);
   const [editingCV, setEditingCV] = useState(null);
 
   useEffect(() => {
@@ -164,6 +167,39 @@ function CVs() {
       alert("Unable to update CV.");
     }
   };
+  const handleOpenAttributesModal = () => {
+    const cv = cvs.find((cv) => cv.id === selectedCVs[0]);
+
+    if (!cv) return;
+
+    setViewingCV(cv);
+  };
+  const handleAttributeValuesUpdated = (updatedValues) => {
+    const updatedCV = {
+      ...viewingCV,
+      attributeValues: viewingCV.attributeValues.map((item) => {
+        const updated = updatedValues.find(
+          (value) => value.attributeId === item.attributeId,
+        );
+
+        return updated
+          ? {
+              ...item,
+              value: updated.value,
+            }
+          : item;
+      }),
+    };
+
+    setViewingCV(updatedCV);
+
+    setCVs((prev) =>
+      prev.map((cv) => (cv.id === updatedCV.id ? updatedCV : cv)),
+    );
+  };
+  const handleCloseAttributesModal = () => {
+    setViewingCV(null);
+  };
   const handleDeleteSelected = async () => {
     const confirmed = window.confirm(
       `Delete ${selectedCVs.length} selected CV(s)?`,
@@ -235,6 +271,8 @@ function CVs() {
         canEdit={selectedCVs.length === 1}
         canDelete={selectedCVs.length > 0}
         addLabel="Add CV"
+        onViewAttributes={handleOpenAttributesModal}
+        canViewAttributes={selectedCVs.length === 1}
       />
 
       <Searchbar
@@ -256,6 +294,18 @@ function CVs() {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
+      {viewingCV && (
+        <Modal
+          title="Generated Attributes"
+          onClose={handleCloseAttributesModal}
+        >
+          <GeneratedAttributesModal
+            cv={viewingCV}
+            onClose={handleCloseAttributesModal}
+            onSaved={handleAttributeValuesUpdated}
+          />
+        </Modal>
+      )}
       {editingCV ? (
         <CVForm
           positions={positions}

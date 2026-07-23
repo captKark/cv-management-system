@@ -25,7 +25,15 @@ const updateCV = async (req, res) => {
 
   res.json(updatedCV);
 };
+const updateAttributeValues = async (req, res) => {
+  const cvId = Number(req.params.id);
 
+  await cvsService.updateAttributeValues(cvId, req.body);
+
+  res.json({
+    message: "Attribute values updated successfully.",
+  });
+};
 const deleteCVs = async (req, res) => {
   const { ids } = req.body;
 
@@ -42,4 +50,5 @@ module.exports = {
   createCV,
   updateCV,
   deleteCVs,
+  updateAttributeValues,
 };

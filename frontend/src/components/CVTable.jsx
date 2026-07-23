@@ -27,6 +27,8 @@ function CVTable({
 
                 <th className="text-nowrap">Position</th>
 
+                <th className="text-nowrap">Attributes</th>
+
                 <th className="text-nowrap">Status</th>
 
                 <th className="text-nowrap">Last Updated</th>
@@ -36,7 +38,7 @@ function CVTable({
             <tbody>
               {cvs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center text-muted py-5">
+                  <td colSpan={6} className="text-center text-muted py-5">
                     <h5 className="mb-2">No CVs found</h5>
                     <p className="mb-0">Create your first CV to get started.</p>
                   </td>
@@ -56,6 +58,16 @@ function CVTable({
                     <td>{cv.candidateName}</td>
 
                     <td>{cv.positionTitle}</td>
+
+                    <td>
+                      {cv.attributeValues?.length > 0 ? (
+                        <span className="badge bg-success">
+                          {cv.attributeValues.length} generated
+                        </span>
+                      ) : (
+                        <span className="text-muted">—</span>
+                      )}
+                    </td>
 
                     <td>
                       <StatusBadge status={cv.status} />

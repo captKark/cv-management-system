@@ -21,6 +21,13 @@ const prisma = require("../lib/prisma");
 
 const getAllCVs = async () => {
   return await prisma.cV.findMany({
+    include: {
+      attributeValues: {
+        include: {
+          attribute: true,
+        },
+      },
+    },
     orderBy: {
       id: "asc",
     },
@@ -105,6 +112,28 @@ const updateCV = async (id, updatedData) => {
     },
   });
 };
+const updateAttributeValues = async (cvId, values) => {
+  return await prisma.$transaction(
+    values.map((item) =>
+      prisma.cVAttributeValue.upsert({
+        where: {
+          cvId_attributeId: {
+            cvId,
+            attributeId: item.attributeId,
+          },
+        },
+        update: {
+          value: item.value,
+        },
+        create: {
+          cvId,
+          attributeId: item.attributeId,
+          value: item.value,
+        },
+      }),
+    ),
+  );
+};
 
 const deleteCVs = async (ids) => {
   const result = await prisma.cV.deleteMany({
@@ -123,4 +152,5 @@ module.exports = {
   createCV,
   updateCV,
   deleteCVs,
+  updateAttributeValues,
 };

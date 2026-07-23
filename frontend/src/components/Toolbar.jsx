@@ -9,6 +9,8 @@ function Toolbar({
   addLabel,
   onAssignAttributes,
   canAssignAttributes,
+  onViewAttributes,
+  canViewAttributes,
 }) {
   return (
     <div className="card shadow-sm mb-3">
@@ -24,6 +26,15 @@ function Toolbar({
         >
           Edit Selected
         </button>
+        {onViewAttributes && (
+          <button
+            className="btn btn-info"
+            onClick={onViewAttributes}
+            disabled={!canViewAttributes}
+          >
+            View Attributes 
+          </button>
+        )}
         {onAssignAttributes && (
           <button
             className="btn btn-info text-white"
