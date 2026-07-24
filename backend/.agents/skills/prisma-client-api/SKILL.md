@@ -111,12 +111,9 @@ const prisma = new PrismaClient({ adapter })
 ### Find records
 
 ```typescript
-// Find by unique field
 const user = await prisma.user.findUnique({
   where: { email: 'alice@prisma.io' }
 })
-
-// Find with filter
 const users = await prisma.user.findMany({
   where: { role: 'ADMIN' },
   orderBy: { createdAt: 'desc' },

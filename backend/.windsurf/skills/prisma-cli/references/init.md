@@ -95,7 +95,6 @@ datasource db {
 ## Generated Config (Node.js default)
 
 ```typescript
-// prisma.config.ts
 import "dotenv/config";
 import { defineConfig } from 'prisma/config'
 

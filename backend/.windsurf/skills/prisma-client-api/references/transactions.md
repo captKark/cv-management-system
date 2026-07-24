@@ -24,7 +24,6 @@ try {
     prisma.user.create({ data: { email: 'alice@prisma.io' } }) // Duplicate!
   ])
 } catch (e) {
-  // Both operations rolled back
 }
 ```
 
@@ -34,18 +33,13 @@ For complex logic and dependent operations:
 
 ```typescript
 await prisma.$transaction(async (tx) => {
-  // Decrement sender balance
   const sender = await tx.account.update({
     where: { id: senderId },
     data: { balance: { decrement: amount } }
   })
-  
-  // Check balance
   if (sender.balance < 0) {
     throw new Error('Insufficient funds')
   }
-  
-  // Increment recipient balance
   await tx.account.update({
     where: { id: recipientId },
     data: { balance: { increment: amount } }
@@ -58,7 +52,6 @@ await prisma.$transaction(async (tx) => {
 ```typescript
 await prisma.$transaction(
   async (tx) => {
-    // operations
   },
   {
     maxWait: 5000,    // Max wait to acquire lock (ms)
@@ -82,7 +75,6 @@ await prisma.$transaction(
 Automatic transactions for nested operations:
 
 ```typescript
-// This is automatically a transaction
 const user = await prisma.user.create({
   data: {
     email: 'alice@prisma.io',
@@ -105,11 +97,8 @@ The `tx` parameter is a Prisma Client scoped to the transaction:
 
 ```typescript
 await prisma.$transaction(async (tx) => {
-  // Use tx instead of prisma
   await tx.user.create({ ... })
   await tx.post.create({ ... })
-  
-  // Can call methods
   const count = await tx.user.count()
 })
 ```
@@ -120,7 +109,6 @@ Use with interactive transactions:
 
 ```typescript
 await prisma.$transaction(async (tx) => {
-  // If not found, throws and rolls back entire transaction
   const user = await tx.user.findUniqueOrThrow({
     where: { id: 1 }
   })
@@ -136,7 +124,6 @@ await prisma.$transaction(async (tx) => {
 ### Keep transactions short
 
 ```typescript
-// Good - only DB operations in transaction
 const data = prepareData() // Outside transaction
 await prisma.$transaction(async (tx) => {
   await tx.user.create({ data })
@@ -148,11 +135,9 @@ await prisma.$transaction(async (tx) => {
 ```typescript
 try {
   await prisma.$transaction(async (tx) => {
-    // operations
   })
 } catch (e) {
   if (e.code === 'P2002') {
-    // Handle unique constraint violation
   }
   throw e
 }
@@ -161,14 +146,10 @@ try {
 ### Use appropriate isolation
 
 ```typescript
-// Default is fine for most cases
 await prisma.$transaction(async (tx) => {
-  // operations
 })
-
-// Use Serializable for strict consistency
 await prisma.$transaction(
-  async (tx) => { /* operations */ },
+  async (tx) => {  },
   { isolationLevel: 'Serializable' }
 )
 ```

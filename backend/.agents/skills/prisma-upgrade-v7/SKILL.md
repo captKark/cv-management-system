@@ -142,17 +142,12 @@ If you need to stay on CommonJS, keep your app as CJS and set `moduleFormat = "c
 ### 3. Update schema.prisma
 
 ```prisma
-// Before (v6)
 generator client {
   provider = "prisma-client-js"
 }
-
-// After (v7)
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
-  // Optional if you need CommonJS:
-  // moduleFormat = "cjs"
 }
 ```
 
@@ -200,11 +195,8 @@ MongoDB does not have a SQL `@prisma/adapter-*` package in the published Prisma 
 ### 6. Update client instantiation
 
 ```typescript
-// Before (v6)
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
-
-// After (v7)
 import { PrismaClient } from '../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 

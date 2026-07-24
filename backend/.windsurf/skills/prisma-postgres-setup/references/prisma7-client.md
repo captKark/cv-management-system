@@ -45,28 +45,18 @@ import { PrismaClient } from './generated/prisma/client.js'
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
 const adapter = new PrismaPg(pool)
 const prisma = new PrismaClient({ adapter })
-
-// Create
 const user = await prisma.user.create({
   data: { email: 'alice@example.com', name: 'Alice' },
 })
-
-// Read with relations
 const posts = await prisma.post.findMany({
   where: { published: true },
   include: { author: true },
 })
-
-// Update
 await prisma.post.update({
   where: { id: 1 },
   data: { published: true },
 })
-
-// Delete
 await prisma.post.delete({ where: { id: 1 } })
-
-// Cleanup
 await prisma.$disconnect()
 await pool.end()
 ```

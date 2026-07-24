@@ -213,7 +213,6 @@ export default defineConfig({
 Load environment variables explicitly in `prisma.config.ts`, commonly with `dotenv`:
 
 ```typescript
-// prisma.config.ts
 import 'dotenv/config'
 ```
 

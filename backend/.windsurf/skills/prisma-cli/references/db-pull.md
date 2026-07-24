@@ -160,9 +160,7 @@ After `db pull`, consider:
 
 4. **Add documentation**:
    ```prisma
-   /// User account information
    model User {
-     /// Primary email for authentication
      email String @unique
    }
    ```

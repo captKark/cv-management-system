@@ -106,7 +106,6 @@ Do you want to reset your database? All data will be lost.
 ### After schema changes
 
 ```prisma
-// schema.prisma - Add new field
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique

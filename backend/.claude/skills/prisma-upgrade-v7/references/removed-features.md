@@ -7,7 +7,6 @@ Several features have been removed in Prisma v7. Here's how to migrate.
 ### Removed
 
 ```typescript
-// ❌ No longer works in v7
 prisma.$use(async (params, next) => {
   const before = Date.now()
   const result = await next(params)
@@ -20,7 +19,6 @@ prisma.$use(async (params, next) => {
 ### Use Client Extensions Instead
 
 ```typescript
-// ✅ v7 approach
 const prisma = new PrismaClient({ adapter }).$extends({
   query: {
     $allModels: {
@@ -45,14 +43,12 @@ const prisma = new PrismaClient({ adapter }).$extends({
   query: {
     user: {
       async delete({ args, query }) {
-        // Convert delete to soft delete
         return prisma.user.update({
           where: args.where,
           data: { deletedAt: new Date() },
         })
       },
       async findMany({ args, query }) {
-        // Filter out soft-deleted records
         args.where = { ...args.where, deletedAt: null }
         return query(args)
       },
@@ -83,7 +79,6 @@ const prisma = new PrismaClient({ adapter }).$extends({
 The Metrics preview feature has been removed.
 
 ```typescript
-// ❌ No longer works
 const metrics = await prisma.$metrics.json()
 ```
 
@@ -109,8 +104,6 @@ const prisma = new PrismaClient({ adapter }).$extends({
     },
   },
 })
-
-// Usage
 const count = await prisma.$totalQueries()
 ```
 
@@ -214,12 +207,9 @@ const userSelect = {
 Removed in v5.0.0 (already deprecated).
 
 ```typescript
-// ❌ Removed
 const prisma = new PrismaClient({
   rejectOnNotFound: true,
 })
-
-// ✅ Use OrThrow methods
 const user = await prisma.user.findUniqueOrThrow({
   where: { id: 1 },
 })

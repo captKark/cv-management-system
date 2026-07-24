@@ -11,8 +11,6 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
-  // Track which demo button is currently active
   const [activeDemoRole, setActiveDemoRole] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -71,8 +69,6 @@ function Login() {
         break;
     }
   };
-
-  // Reset active state if user manually changes email or password
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setActiveDemoRole(null);
@@ -101,7 +97,7 @@ function Login() {
             }}
           >
             <div className="card-body p-4 p-sm-5">
-              {/* Header / Brand */}
+              {}
               <div className="text-center mb-4">
                 <div
                   className="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
@@ -115,7 +111,7 @@ function Login() {
                 </p>
               </div>
 
-              {/* Error Alert */}
+              {}
               {error && (
                 <div
                   className="alert alert-danger d-flex align-items-center small py-2 px-3 mb-4 rounded-3"
@@ -126,7 +122,7 @@ function Login() {
                 </div>
               )}
 
-              {/* Demo Quick Fill Badges */}
+              {}
               <div className="bg-light p-3 rounded-3 mb-4 border">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <span
@@ -159,7 +155,7 @@ function Login() {
                 </div>
               </div>
 
-              {/* Login Form */}
+              {}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label fw-semibold text-secondary small mb-1">
@@ -230,7 +226,7 @@ function Login() {
                 </button>
               </form>
 
-              {/* Footer Info */}
+              {}
               <div className="text-center mt-4 pt-3 border-top">
                 <p
                   className="text-muted extra-small mb-0"

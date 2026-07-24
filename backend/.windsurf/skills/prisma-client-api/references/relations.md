@@ -111,8 +111,6 @@ const post = await prisma.post.create({
     }
   }
 })
-
-// Shorthand for foreign key
 const post = await prisma.post.create({
   data: {
     title: 'New Post',
@@ -174,15 +172,12 @@ const user = await prisma.user.update({
 ### Disconnect
 
 ```typescript
-// 1-to-1 optional
 const user = await prisma.user.update({
   where: { id: 1 },
   data: {
     profile: { disconnect: true }
   }
 })
-
-// Many-to-many
 const post = await prisma.post.update({
   where: { id: 1 },
   data: {
@@ -204,8 +199,6 @@ const user = await prisma.user.update({
     }
   }
 })
-
-// Delete many
 const user = await prisma.user.update({
   where: { id: 1 },
   data: {
@@ -219,7 +212,6 @@ const user = await prisma.user.update({
 ### Set (replace all)
 
 ```typescript
-// Replace all related records
 const post = await prisma.post.update({
   where: { id: 1 },
   data: {
@@ -289,7 +281,6 @@ const users = await prisma.user.findMany({
     }
   }
 })
-// { name: 'Alice', _count: { posts: 5, followers: 100 } }
 ```
 
 ### Filter counted relations

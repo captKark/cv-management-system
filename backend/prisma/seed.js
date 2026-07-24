@@ -3,15 +3,12 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  // ---------- Clear Database ----------
 
   await prisma.cVAttributeValue.deleteMany();
   await prisma.positionAttribute.deleteMany();
   await prisma.cV.deleteMany();
   await prisma.attribute.deleteMany();
   await prisma.position.deleteMany();
-
-  // ---------- Seed Positions ----------
 
   const frontend = await prisma.position.create({
     data: {
@@ -132,8 +129,6 @@ async function main() {
     ],
   });
 
-  // ---------- Seed Attributes ----------
-
   const attributes = await prisma.attribute.createMany({
     data: [
       { name: "First Name", category: "Personal", type: "Text" },
@@ -155,8 +150,6 @@ async function main() {
     },
   });
 
-  // ---------- Assign Attributes to Positions ----------
-
   await prisma.positionAttribute.createMany({
     data: allAttributes.map((attribute) => ({
       positionId: frontend.id,
@@ -170,8 +163,6 @@ async function main() {
       attributeId: attribute.id,
     })),
   });
-
-  // ---------- Seed CVs ----------
 
   const createdJohn = await prisma.cV.create({
     data: {
@@ -192,8 +183,6 @@ async function main() {
       updatedAt: "2026-07-20",
     },
   });
-
-  // ---------- Generate CV Attribute Values ----------
 
   for (const cv of [createdJohn, createdJane]) {
     const position = await prisma.position.findUnique({

@@ -23,7 +23,7 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         <Route element={<MainLayout />}>
-          {/* Admin + Recruiter + Candidate */}
+          {}
           <Route
             element={
               <ProtectedRoute
@@ -36,14 +36,14 @@ function App() {
             <Route path="/about" element={<About />} />
           </Route>
 
-          {/* Admin + Recruiter */}
+          {}
           <Route
             element={<ProtectedRoute allowedRoles={["admin", "recruiter"]} />}
           >
             <Route path="/positions" element={<Positions />} />
           </Route>
 
-          {/* Admin only */}
+          {}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/templates" element={<Templates />} />
             <Route path="/attributes" element={<Attributes />} />

@@ -8,8 +8,6 @@ Explicitly connect to the database:
 
 ```typescript
 const prisma = new PrismaClient({ adapter })
-
-// Explicit connection
 await prisma.$connect()
 ```
 
@@ -46,8 +44,6 @@ await prisma.$disconnect()
 process.on('beforeExit', async () => {
   await prisma.$disconnect()
 })
-
-// Or with SIGTERM
 process.on('SIGTERM', async () => {
   await prisma.$disconnect()
   process.exit(0)
@@ -137,7 +133,6 @@ const prisma = new PrismaClient({ adapter }).$extends({
   query: {
     user: {
       async findMany({ args, query }) {
-        // Add default filter
         args.where = { ...args.where, deletedAt: null }
         return query(args)
       }
@@ -189,12 +184,8 @@ See `raw-queries.md` for details.
 
 ```typescript
 import { Prisma } from '../generated/client'
-
-// Input types
 type UserCreateInput = Prisma.UserCreateInput
 type UserWhereInput = Prisma.UserWhereInput
-
-// Output types
 type User = Prisma.UserGetPayload<{}>
 type UserWithPosts = Prisma.UserGetPayload<{
   include: { posts: true }

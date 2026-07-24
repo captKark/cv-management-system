@@ -36,7 +36,6 @@ const getAllCVs = async () => {
 
 const createCV = async (cvData) => {
   return await prisma.$transaction(async (tx) => {
-    // 1. Create the CV
     const createdCV = await tx.cV.create({
       data: {
         candidateName: cvData.candidateName,
@@ -46,8 +45,6 @@ const createCV = async (cvData) => {
         updatedAt: new Date().toISOString(),
       },
     });
-
-    // 2. Load the Position Template
     const position = await tx.position.findUnique({
       where: {
         id: Number(cvData.positionId),
@@ -60,8 +57,6 @@ const createCV = async (cvData) => {
     if (!position) {
       throw new Error("Position not found.");
     }
-
-    // 3. Automatically create empty attribute values
     if (position.attributes.length > 0) {
       await tx.cVAttributeValue.createMany({
         data: position.attributes.map((attribute) => ({
@@ -71,8 +66,6 @@ const createCV = async (cvData) => {
         })),
       });
     }
-
-    // 4. Return the generated CV with its attribute values
     return await tx.cV.findUnique({
       where: {
         id: createdCV.id,

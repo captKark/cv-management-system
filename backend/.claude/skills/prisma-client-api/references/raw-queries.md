@@ -96,7 +96,6 @@ const inserted = await prisma.$executeRaw`
 For fully dynamic queries (use with caution!):
 
 ```typescript
-// ⚠️ SQL injection risk - only use with trusted input
 const table = 'User'
 const users = await prisma.$queryRawUnsafe(
   `SELECT * FROM "${table}" WHERE id = $1`,
@@ -119,7 +118,6 @@ const result = await prisma.$executeRawUnsafe(
 ### Safe (parameterized)
 
 ```typescript
-// ✅ User input is parameterized
 const email = userInput
 const users = await prisma.$queryRaw`
   SELECT * FROM "User" WHERE email = ${email}
@@ -129,7 +127,6 @@ const users = await prisma.$queryRaw`
 ### Unsafe (concatenation)
 
 ```typescript
-// ❌ SQL injection vulnerability!
 const email = userInput
 const users = await prisma.$queryRawUnsafe(
   `SELECT * FROM "User" WHERE email = '${email}'`
@@ -141,12 +138,9 @@ const users = await prisma.$queryRawUnsafe(
 ### PostgreSQL
 
 ```typescript
-// Array operations
 const users = await prisma.$queryRaw`
   SELECT * FROM "User" WHERE 'admin' = ANY(roles)
 `
-
-// JSON operations
 const users = await prisma.$queryRaw`
   SELECT * FROM "User" WHERE metadata->>'theme' = 'dark'
 `
@@ -155,7 +149,6 @@ const users = await prisma.$queryRaw`
 ### MySQL
 
 ```typescript
-// Full-text search
 const posts = await prisma.$queryRaw`
   SELECT * FROM Post WHERE MATCH(title, content) AGAINST(${searchTerm})
 `
@@ -190,5 +183,4 @@ type Result = { createdAt: Date }
 const users = await prisma.$queryRaw<Result[]>`
   SELECT "createdAt" FROM "User"
 `
-// createdAt is already a Date object
 ```

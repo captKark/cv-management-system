@@ -132,7 +132,6 @@ const prisma = new PrismaClient({
 Prevent multiple client instances in development:
 
 ```typescript
-// lib/prisma.ts
 import { PrismaClient } from '../generated/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 
@@ -157,7 +156,6 @@ if (process.env.NODE_ENV !== 'production') {
 ## Next.js Pattern
 
 ```typescript
-// lib/prisma.ts
 import { PrismaClient } from '@/generated/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 

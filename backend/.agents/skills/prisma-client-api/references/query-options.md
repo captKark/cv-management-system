@@ -13,10 +13,8 @@ const user = await prisma.user.findUnique({
     id: true,
     name: true,
     email: true,
-    // password: false (excluded by not including)
   }
 })
-// Returns: { id: 1, name: 'Alice', email: 'alice@prisma.io' }
 ```
 
 ### Select relations
@@ -62,7 +60,6 @@ const users = await prisma.user.findMany({
     }
   }
 })
-// Returns: { name: 'Alice', _count: { posts: 5 } }
 ```
 
 ## include
@@ -136,7 +133,6 @@ const user = await prisma.user.findUnique({
     password: true
   }
 })
-// Returns all fields except password
 ```
 
 ### Omit in relations
@@ -174,12 +170,9 @@ See `filters.md` for detailed filter operators.
 Sort results:
 
 ```typescript
-// Single field
 const users = await prisma.user.findMany({
   orderBy: { name: 'asc' }
 })
-
-// Multiple fields
 const users = await prisma.user.findMany({
   orderBy: [
     { role: 'desc' },
@@ -213,13 +206,10 @@ const users = await prisma.user.findMany({
 Pagination:
 
 ```typescript
-// First page
 const users = await prisma.user.findMany({
   take: 10,
   skip: 0
 })
-
-// Second page
 const users = await prisma.user.findMany({
   take: 10,
   skip: 10
@@ -233,7 +223,6 @@ const lastUsers = await prisma.user.findMany({
   take: -10,
   orderBy: { id: 'asc' }
 })
-// Returns last 10 users
 ```
 
 ## cursor
@@ -241,13 +230,10 @@ const lastUsers = await prisma.user.findMany({
 Cursor-based pagination:
 
 ```typescript
-// First page
 const firstPage = await prisma.user.findMany({
   take: 10,
   orderBy: { id: 'asc' }
 })
-
-// Next page using cursor
 const nextPage = await prisma.user.findMany({
   take: 10,
   skip: 1,  // Skip the cursor record

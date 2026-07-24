@@ -121,7 +121,6 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    // Local Prisma Postgres URL (from prisma dev output)
     url: env('DATABASE_URL'),
   },
 })

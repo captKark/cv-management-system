@@ -176,7 +176,6 @@ import { PrismaPg } from '@prisma/adapter-pg'
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
-  // Pool configuration
   max: 10,                    // Maximum connections
   idleTimeoutMillis: 30000,   // Close idle connections after 30s
   connectionTimeoutMillis: 5000, // Connection timeout (v6 default was 5s)
@@ -247,7 +246,6 @@ const prisma = new PrismaClient({ adapter })
 ## Singleton Pattern
 
 ```typescript
-// lib/prisma.ts
 import { PrismaClient } from '../generated/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 

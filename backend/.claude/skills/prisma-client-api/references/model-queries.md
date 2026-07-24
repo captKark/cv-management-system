@@ -21,7 +21,6 @@ const user = await prisma.user.findUnique({
 #### With composite unique key
 
 ```typescript
-// Model with @@unique([firstName, lastName])
 const user = await prisma.user.findUnique({
   where: {
     firstName_lastName: {
@@ -40,7 +39,6 @@ Same as findUnique but throws if not found:
 const user = await prisma.user.findUniqueOrThrow({
   where: { id: 1 }
 })
-// Throws PrismaClientKnownRequestError if not found
 ```
 
 ### findFirst
@@ -119,7 +117,6 @@ const result = await prisma.user.createMany({
   ],
   skipDuplicates: true  // Skip records with duplicate unique fields
 })
-// Returns { count: 2 }
 ```
 
 ### createManyAndReturn
@@ -133,7 +130,6 @@ const users = await prisma.user.createManyAndReturn({
     { email: 'bob@prisma.io', name: 'Bob' }
   ]
 })
-// Returns array of created users
 ```
 
 ## Update Operations
@@ -173,7 +169,6 @@ const result = await prisma.user.updateMany({
   where: { role: 'USER' },
   data: { verified: true }
 })
-// Returns { count: 42 }
 ```
 
 ### updateManyAndReturn
@@ -183,7 +178,6 @@ const users = await prisma.user.updateManyAndReturn({
   where: { role: 'USER' },
   data: { verified: true }
 })
-// Returns array of updated users
 ```
 
 ### upsert
@@ -208,7 +202,6 @@ Delete a single record:
 const user = await prisma.user.delete({
   where: { id: 1 }
 })
-// Returns deleted record
 ```
 
 ### deleteMany
@@ -219,9 +212,6 @@ Delete multiple records:
 const result = await prisma.user.deleteMany({
   where: { role: 'GUEST' }
 })
-// Returns { count: 5 }
-
-// Delete all
 const result = await prisma.user.deleteMany({})
 ```
 

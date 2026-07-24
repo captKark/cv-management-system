@@ -27,7 +27,7 @@ Add `"type": "module"` to `package.json` and use an ESM-compatible `tsconfig.jso
     "skipLibCheck": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*", "prisma/**/*"]
+  "include": ["src*", "prisma*"]
 }
 ```
 

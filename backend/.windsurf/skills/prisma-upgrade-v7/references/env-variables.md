@@ -38,7 +38,6 @@ export default defineConfig({
 Bun automatically loads `.env` files. No additional setup needed:
 
 ```typescript
-// prisma.config.ts (Bun)
 import { defineConfig, env } from 'prisma/config'
 
 export default defineConfig({
@@ -68,11 +67,8 @@ npm install -D dotenv-cli
 ### Using dotenv with path
 
 ```typescript
-// prisma.config.ts
 import { config } from 'dotenv'
 import path from 'path'
-
-// Load specific .env file
 config({ path: path.join(__dirname, '.env.local') })
 
 import { defineConfig, env } from 'prisma/config'
@@ -91,7 +87,6 @@ For your application, load env vars at startup:
 ### Entry point
 
 ```typescript
-// index.ts
 import 'dotenv/config'
 
 import { PrismaClient } from '../generated/client'
@@ -109,8 +104,6 @@ const prisma = new PrismaClient({ adapter })
 ```typescript
 import { config } from 'dotenv'
 config()
-
-// Now process.env.DATABASE_URL is available
 ```
 
 ## Removed Environment Variables
@@ -138,8 +131,6 @@ The `env()` function from `prisma/config` provides type safety:
 
 ```typescript
 import { env } from 'prisma/config'
-
-// Type-safe environment variable access
 const url = env('DATABASE_URL')  // string
 ```
 

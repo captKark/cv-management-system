@@ -66,8 +66,6 @@ const Attributes = () => {
 
   const currentPageAttributes = filteredAttributes.slice(startIndex, endIndex);
 
-  // ---------- Selection Logic ----------
-
   const visibleIds = currentPageAttributes.map((attribute) => attribute.id);
 
   const allSelected =
@@ -97,8 +95,6 @@ const Attributes = () => {
     }
   };
 
-  // ---------- Pagination ----------
-
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -124,7 +120,6 @@ const Attributes = () => {
 
     return () => clearTimeout(timer);
   }, [successMessage]);
-  // ---------- Delete ----------
 
   const handleDeleteSelected = async () => {
     const confirmed = window.confirm(
@@ -160,8 +155,6 @@ const Attributes = () => {
     }
   };
 
-  // ---------- Create ----------
-
   const handleOpenAddModal = () => {
     setIsAddModalOpen(true);
   };
@@ -194,8 +187,6 @@ const Attributes = () => {
       alert("Unable to create attribute.");
     }
   };
-
-  // ---------- Edit ----------
 
   const handleOpenEditModal = () => {
     const attribute = attributes.find(

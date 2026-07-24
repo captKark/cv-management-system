@@ -28,14 +28,12 @@ addressing.
 ## Bad
 
 ```typescript
-// Ported from v6 and addressed by model name:
 const user = await db.orm.User.first(); // undefined — Mongo ORM keys are storage names
 ```
 
 ## Good
 
 ```typescript
-// Mongo ORM keys are collection storage names (@@map or lowercased model name):
 const user = await db.orm.users.first();
 ```
 

@@ -44,26 +44,19 @@ export default defineConfig({
 ### Common seed commands
 
 ```typescript
-// TypeScript with tsx
 seed: 'tsx prisma/seed.ts'
-
-// TypeScript with ts-node
 seed: 'ts-node prisma/seed.ts'
-
-// JavaScript
 seed: 'node prisma/seed.js'
 ```
 
 ## Seed Script Example
 
 ```typescript
-// prisma/seed.ts
 import { PrismaClient } from '../generated/client'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  // Create users
   const alice = await prisma.user.upsert({
     where: { email: 'alice@prisma.io' },
     update: {},
@@ -133,14 +126,11 @@ prisma db seed  # Must run explicitly
 Use `upsert` to make seeds re-runnable:
 
 ```typescript
-// Good: Can run multiple times
 await prisma.user.upsert({
   where: { email: 'alice@prisma.io' },
   update: {},  // Don't change existing
   create: { email: 'alice@prisma.io', name: 'Alice' },
 })
-
-// Bad: Fails on second run
 await prisma.user.create({
   data: { email: 'alice@prisma.io', name: 'Alice' },
 })
@@ -158,10 +148,8 @@ prisma db seed
 ### Conditional seeding
 
 ```typescript
-// prisma/seed.ts
 const count = await prisma.user.count()
 if (count === 0) {
-  // Only seed if empty
   await seedUsers()
 }
 ```
@@ -169,7 +157,6 @@ if (count === 0) {
 ### Environment-specific seeds
 
 ```typescript
-// prisma/seed.ts
 const env = process.env.NODE_ENV || 'development'
 
 if (env === 'development') {

@@ -31,7 +31,6 @@ atomicity.
 ## Bad
 
 ```typescript
-// Assuming v6 names exist in Prisma Next:
 await db.user.$runCommandRaw({ collStats: 'users' }); // no such method
 await db.transaction(async (tx) => { ... });          // no such method on the Mongo façade
 ```
@@ -39,18 +38,11 @@ await db.transaction(async (tx) => { ... });          // no such method on the M
 ## Good
 
 ```typescript
-// Raw lane under its Next name:
 const raw = mongoRaw(db);
 await raw.users.aggregate([{ $match: { status: 'active' } }]);
-
-// Aggregation through the typed pipeline builder:
 const stats = await db.query.from('users').group({ _id: '$role', n: { $count: {} } }).build();
-
-// Multi-document atomicity today: the mongodb driver (a direct dependency of the
-// project) exposes sessions and transactions as usual:
 const session = mongoClient.startSession();
 await session.withTransaction(async () => {
-  // ...writes...
 });
 ```
 

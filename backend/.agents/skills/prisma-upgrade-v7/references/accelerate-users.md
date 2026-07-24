@@ -44,8 +44,6 @@ export default defineConfig({
 ```typescript
 import { PrismaClient } from '../generated/client'
 import { withAccelerate } from '@prisma/extension-accelerate'
-
-// Use accelerateUrl instead of adapter
 export const prisma = new PrismaClient({
   accelerateUrl: process.env.DATABASE_URL,
 }).$extends(withAccelerate())
@@ -54,7 +52,6 @@ export const prisma = new PrismaClient({
 ## What NOT to Do
 
 ```typescript
-// ❌ WRONG - Don't use adapter with Accelerate URL
 import { PrismaPg } from '@prisma/adapter-pg'
 
 const adapter = new PrismaPg({
@@ -84,7 +81,6 @@ DIRECT_DATABASE_URL="postgresql://..."  # For migrations
 ```
 
 ```typescript
-// prisma.config.ts
 export default defineConfig({
   datasource: {
     url: env('DIRECT_DATABASE_URL'),  // Direct URL for CLI
@@ -112,7 +108,6 @@ export const prisma = new PrismaClient({
 If you later switch to direct TCP connection:
 
 ```typescript
-// Change from accelerateUrl to adapter
 import { PrismaClient } from '../generated/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 
@@ -141,7 +136,6 @@ const users = await prisma.user.findMany({
 Accelerate works great in edge runtimes:
 
 ```typescript
-// Works in Vercel Edge, Cloudflare Workers, etc.
 import { PrismaClient } from '../generated/client'
 import { withAccelerate } from '@prisma/extension-accelerate'
 

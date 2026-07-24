@@ -1,16 +1,153 @@
-# React + Vite
+# CV Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack CV Management System developed as part of the iTransition Front-end Internship project.
 
-Currently, two official plugins are available:
+The application allows recruiters to manage job positions, maintain an attribute library, generate CV templates automatically from positions, and edit candidate information through a secure role-based system.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Live Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Frontend:
+https://cv-management-system-u1af.vercel.app/login
 
-## Expanding the ESLint configuration
+Backend API:
+https://cv-management-api.onrender.com
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Test Account
+
+Administrator
+
+Email:
+admin@test.com
+
+Password:
+admin123
+
+---
+
+## Features
+
+### Authentication
+
+- JWT Authentication
+- Protected Routes
+- Role-Based Authorization
+- Persistent Login
+
+### Dashboard
+
+- Position statistics
+- CV statistics
+- Recently created positions
+- Recently created CVs
+
+### Position Management
+
+- Create Position
+- Edit Position
+- Delete Position
+- Duplicate Position
+- Search
+- Department Filter
+- Pagination
+
+### Attribute Library
+
+- Create Attribute
+- Edit Attribute
+- Delete Attribute
+- Category Filter
+- Search
+- Pagination
+
+### Position Templates
+
+- Assign Attributes to Positions
+- View Assigned Attributes
+
+### CV Management
+
+- Create CV
+- Edit CV
+- Delete CV
+- Automatic Attribute Generation from Position Templates
+- Edit Generated Attribute Values
+
+---
+
+## Technologies
+
+### Frontend
+
+- React
+- React Router
+- Bootstrap 5
+- Bootstrap Icons
+- Vite
+
+### Backend
+
+- Node.js
+- Express.js
+- Prisma ORM
+- PostgreSQL
+
+### Authentication
+
+- JWT
+
+### Deployment
+
+- Frontend: Vercel
+- Backend: Render
+- Database: PostgreSQL (Render)
+
+---
+
+## Project Structure
+
+```
+frontend/
+backend/
+
+```
+
+---
+
+## Installation
+
+### Clone
+
+```bash
+git clone https://github.com/captKark/cv-management-system.git
+```
+
+### Backend
+
+```bash
+cd backend
+npm install
+npx prisma generate
+npx prisma migrate dev
+npx prisma db seed
+npm start
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## Author
+
+Mohammad Munzurul Haque
+
+iTransition Front-end Internship Project

@@ -77,8 +77,6 @@ const Positions = () => {
 
   const currentPagePositions = filteredPositions.slice(startIndex, endIndex);
 
-  // ---------- Selection Logic ----------
-
   const visibleIds = currentPagePositions.map((position) => position.id);
 
   const allSelected =
@@ -108,8 +106,6 @@ const Positions = () => {
     }
   };
 
-  // ---------- Pagination ----------
-
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -135,7 +131,6 @@ const Positions = () => {
 
     return () => clearTimeout(timer);
   }, [successMessage]);
-  // ---------- Delete ----------
 
   const handleDeleteSelected = async () => {
     const confirmed = window.confirm(
@@ -171,8 +166,6 @@ const Positions = () => {
     }
   };
 
-  // ---------- Create ----------
-
   const handleOpenAddModal = () => {
     setIsAddModalOpen(true);
   };
@@ -205,8 +198,6 @@ const Positions = () => {
       alert("Unable to create position.");
     }
   };
-
-  // ---------- Edit ----------
 
   const handleOpenEditModal = () => {
     const position = positions.find(
