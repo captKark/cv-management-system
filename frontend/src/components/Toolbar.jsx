@@ -53,16 +53,6 @@ function Toolbar({
             Duplicate Selected
           </button>
         )}
-        {onViewAttributes && (
-          <button
-            className="btn btn-info"
-            onClick={onViewAttributes}
-            disabled={!canViewAttributes}
-          >
-            View Attributes
-          </button>
-        )}
-
         <button
           className="btn btn-danger"
           onClick={onDeleteSelected}

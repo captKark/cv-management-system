@@ -85,28 +85,36 @@ function GeneratedAttributesModal({ cv, onClose, onSaved }) {
           </thead>
 
           <tbody>
-            {values.map((item) => (
-              <tr key={item.attributeId}>
-                <td className="fw-semibold">{item.attributeName}</td>
-
-                <td>
-                  <input
-                    type={getInputType(item.attributeType)}
-                    className={`form-control ${
-                      item.value.trim() === "" ? "border-danger" : ""
-                    }`}
-                    value={item.value}
-                    onChange={(e) =>
-                      handleChange(item.attributeId, e.target.value)
-                    }
-                  />
-
-                  {item.value.trim() === "" && (
-                    <small className="text-danger">Missing value</small>
-                  )}
+            {values.length === 0 ? (
+              <tr>
+                <td colSpan="2" className="text-center text-muted py-4">
+                  No attributes are assigned to this position.
                 </td>
               </tr>
-            ))}
+            ) : (
+              values.map((item) => (
+                <tr key={item.attributeId}>
+                  <td className="fw-semibold">{item.attributeName}</td>
+
+                  <td>
+                    <input
+                      type={getInputType(item.attributeType)}
+                      className={`form-control ${
+                        item.value.trim() === "" ? "border-danger" : ""
+                      }`}
+                      value={item.value}
+                      onChange={(e) =>
+                        handleChange(item.attributeId, e.target.value)
+                      }
+                    />
+
+                    {item.value.trim() === "" && (
+                      <small className="text-danger">Missing value</small>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

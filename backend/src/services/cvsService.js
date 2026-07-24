@@ -89,27 +89,69 @@ const createCV = async (cvData) => {
 };
 
 const updateCV = async (id, updatedData) => {
-  const existingCV = await prisma.cV.findUnique({
-    where: {
-      id,
-    },
-  });
+  return await prisma.$transaction(async (tx) => {
+    const existingCV = await tx.cV.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  if (!existingCV) {
-    return null;
-  }
+    if (!existingCV) {
+      return null;
+    }
 
-  return await prisma.cV.update({
-    where: {
-      id,
-    },
-    data: {
-      candidateName: updatedData.candidateName,
-      positionId: updatedData.positionId,
-      positionTitle: updatedData.positionTitle,
-      status: updatedData.status,
-      updatedAt: updatedData.updatedAt,
-    },
+    const updatedCV = await tx.cV.update({
+      where: {
+        id,
+      },
+      data: {
+        candidateName: updatedData.candidateName,
+        positionId: Number(updatedData.positionId),
+        positionTitle: updatedData.positionTitle,
+        status: updatedData.status,
+        updatedAt: updatedData.updatedAt,
+      },
+    });
+
+    if (existingCV.positionId !== Number(updatedData.positionId)) {
+      await tx.cVAttributeValue.deleteMany({
+        where: {
+          cvId: id,
+        },
+      });
+
+      const position = await tx.position.findUnique({
+        where: {
+          id: Number(updatedData.positionId),
+        },
+        include: {
+          attributes: true,
+        },
+      });
+
+      if (position.attributes.length > 0) {
+        await tx.cVAttributeValue.createMany({
+          data: position.attributes.map((attribute) => ({
+            cvId: id,
+            attributeId: attribute.attributeId,
+            value: "",
+          })),
+        });
+      }
+    }
+
+    return await tx.cV.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        attributeValues: {
+          include: {
+            attribute: true,
+          },
+        },
+      },
+    });
   });
 };
 const updateAttributeValues = async (cvId, values) => {
