@@ -7,6 +7,7 @@ import Pagination from "../components/Pagination";
 import CVForm from "../components/CVForm";
 import Modal from "../components/Modal";
 import GeneratedAttributesModal from "../components/GeneratedAttributesModal";
+import { getCurrentUser } from "../utils/auth";
 
 const ROWS_PER_PAGE = 5;
 const API_URL = `${import.meta.env.VITE_API_URL}/api/cvs`;
@@ -96,13 +97,20 @@ function CVs() {
   };
 
   const handleCreateCV = async (newCV) => {
+    const user = getCurrentUser();
+
+    const payload = {
+      ...newCV,
+      status: user?.role === "candidate" ? "Draft" : newCV.status,
+    };
+
     try {
       const response = await apiFetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newCV),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {

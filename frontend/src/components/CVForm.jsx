@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CV_STATUSES } from "../constants/status";
+import { getCurrentUser } from "../utils/auth";
 
 function CVForm({ positions, initialValues, onSubmit, onClose }) {
   const [candidateName, setCandidateName] = useState(
@@ -10,14 +11,22 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
     initialValues?.positionTitle ?? "",
   );
 
-  const [status, setStatus] = useState(initialValues?.status ?? "");
+  const [status, setStatus] = useState(
+    initialValues?.status ?? (isCandidate ? "Draft" : ""),
+  );
 
   const [positionId, setPositionId] = useState(initialValues?.positionId ?? "");
 
+  const user = getCurrentUser();
+  const isCandidate = user?.role === "candidate";
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!candidateName.trim() || !positionTitle.trim() || !status.trim()) {
+    if (
+      !candidateName.trim() ||
+      !positionTitle.trim() ||
+      (!isCandidate && !status.trim())
+    ) {
       alert("All fields are required.");
       return;
     }
@@ -78,23 +87,25 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
             </select>
           </div>
 
-          <div className="mb-4">
-            <label className="form-label">Status</label>
+          {!isCandidate && (
+            <div className="mb-4">
+              <label className="form-label">Status</label>
 
-            <select
-              className="form-select"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="">Select status</option>
+              <select
+                className="form-select"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="">Select status</option>
 
-              {CV_STATUSES.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </div>
+                {CV_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="d-flex justify-content-end gap-2">
             <button

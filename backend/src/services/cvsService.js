@@ -41,7 +41,7 @@ const createCV = async (cvData) => {
         candidateName: cvData.candidateName,
         positionId: Number(cvData.positionId),
         positionTitle: cvData.positionTitle,
-        status: cvData.status,
+        status: cvData.status || "Draft",
         updatedAt: new Date().toISOString(),
       },
     });
