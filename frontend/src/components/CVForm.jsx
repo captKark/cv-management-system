@@ -3,6 +3,8 @@ import { CV_STATUSES } from "../constants/status";
 import { getCurrentUser } from "../utils/auth";
 
 function CVForm({ positions, initialValues, onSubmit, onClose }) {
+  const user = getCurrentUser();
+  const isCandidate = user?.role === "candidate";
   const [candidateName, setCandidateName] = useState(
     initialValues?.candidateName ?? "",
   );
@@ -17,8 +19,6 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
 
   const [positionId, setPositionId] = useState(initialValues?.positionId ?? "");
 
-  const user = getCurrentUser();
-  const isCandidate = user?.role === "candidate";
   const handleSubmit = (e) => {
     e.preventDefault();
 
