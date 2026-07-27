@@ -26,6 +26,6 @@ router.put(
   authorize("admin","recruiter","candidate"),
   updateAttributeValues,
 );
-router.delete("/", authenticate, authorize("admin"), deleteCVs);
+router.delete("/", authenticate, authorize("admin","recruiter"), deleteCVs);
 
 module.exports = router;
