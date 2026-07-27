@@ -130,7 +130,7 @@ function CVs() {
       setIsAddModalOpen(false);
     } catch (err) {
       console.error(err);
-      asetNotification({
+      setNotification({
         type: "danger",
         message: "Unable to create CV.",
       });
