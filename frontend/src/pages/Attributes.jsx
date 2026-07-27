@@ -7,6 +7,7 @@ import Modal from "../components/Modal";
 import AttributeForm from "../components/AttributeForm";
 import AttributeTable from "../components/AttributeTable";
 import CategoryFilter from "../components/CategoryFilter";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/attributes`;
 const ROWS_PER_PAGE = 5;
@@ -27,6 +28,9 @@ const Attributes = () => {
     message: "",
     type: "",
   });
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   useEffect(() => {
     const fetchAttributes = async () => {
       setLoading(true);
@@ -126,12 +130,12 @@ const Attributes = () => {
     return () => clearTimeout(timer);
   }, [notification]);
 
-  const handleDeleteSelected = async () => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${selectedAttributes.length} selected attribute(s)?`,
-    );
+  const handleDeleteSelected = () => {
+    setShowDeleteModal(true);
+  };
 
-    if (!confirmed) return;
+  const confirmDelete = async () => {
+    setDeleting(true);
 
     try {
       const response = await apiFetch(API_URL, {
@@ -151,17 +155,24 @@ const Attributes = () => {
       setAttributes((prev) =>
         prev.filter((attribute) => !selectedAttributes.includes(attribute.id)),
       );
-      setNotification({
-        message: "Attribute(s) deleted successfully.",
-        type: "success",
-      });
+
       setSelectedAttributes([]);
+
+      setNotification({
+        type: "success",
+        message: "Attribute(s) deleted successfully.",
+      });
+
+      setShowDeleteModal(false);
     } catch (err) {
       console.error(err);
+
       setNotification({
-        message: "Unable to delete attribute(s).",
         type: "danger",
+        message: "Unable to delete attributes.",
       });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -345,6 +356,21 @@ const Attributes = () => {
             initialValues={null}
             onSubmit={handleCreateAttribute}
             onClose={handleCloseAddModal}
+          />
+        </Modal>
+      )}
+      {showDeleteModal && (
+        <Modal
+          title="Delete Attributes"
+          size="sm"
+          onClose={() => setShowDeleteModal(false)}
+        >
+          <ConfirmDeleteModal
+            itemName="Attribute"
+            count={selectedAttributes.length}
+            loading={deleting}
+            onCancel={() => setShowDeleteModal(false)}
+            onConfirm={confirmDelete}
           />
         </Modal>
       )}

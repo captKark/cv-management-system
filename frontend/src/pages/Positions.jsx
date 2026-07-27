@@ -9,6 +9,7 @@ import PositionForm from "../components/PositionForm";
 import Modal from "../components/Modal";
 import AssignAttributesModal from "../components/AssignAttributesModal";
 import PositionAttributesModal from "../components/PositionAttributesModal";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/positions`;
 const ROWS_PER_PAGE = 5;
@@ -34,6 +35,8 @@ const Positions = () => {
     type: "",
     message: "",
   });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const fetchPositions = async () => {
     setLoading(true);
     setError(null);
@@ -138,12 +141,12 @@ const Positions = () => {
     return () => clearTimeout(timer);
   }, [notification]);
 
-  const handleDeleteSelected = async () => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${selectedPositions.length} selected position(s)?`,
-    );
+  const handleDeleteSelected = () => {
+    setShowDeleteModal(true);
+  };
 
-    if (!confirmed) return;
+  const confirmDelete = async () => {
+    setDeleting(true);
 
     try {
       const response = await apiFetch(API_URL, {
@@ -163,17 +166,24 @@ const Positions = () => {
       setPositions((prev) =>
         prev.filter((position) => !selectedPositions.includes(position.id)),
       );
+
+      setSelectedPositions([]);
+
       setNotification({
         type: "success",
         message: "Position(s) deleted successfully.",
       });
-      setSelectedPositions([]);
+
+      setShowDeleteModal(false);
     } catch (err) {
       console.error(err);
+
       setNotification({
         type: "danger",
         message: "Unable to delete positions.",
       });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -443,6 +453,21 @@ const Positions = () => {
       {viewingPosition && (
         <Modal title="Assigned Attributes" onClose={handleCloseAttributesView}>
           <PositionAttributesModal position={viewingPosition} />
+        </Modal>
+      )}
+      {showDeleteModal && (
+        <Modal
+          title="Delete Positions"
+          size="sm"
+          onClose={() => setShowDeleteModal(false)}
+        >
+          <ConfirmDeleteModal
+            itemName="Position"
+            count={selectedPositions.length}
+            loading={deleting}
+            onCancel={() => setShowDeleteModal(false)}
+            onConfirm={confirmDelete}
+          />
         </Modal>
       )}
     </div>

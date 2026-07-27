@@ -8,6 +8,7 @@ import CVForm from "../components/CVForm";
 import Modal from "../components/Modal";
 import GeneratedAttributesModal from "../components/GeneratedAttributesModal";
 import { getCurrentUser } from "../utils/auth";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const ROWS_PER_PAGE = 5;
 const API_URL = `${import.meta.env.VITE_API_URL}/api/cvs`;
@@ -29,6 +30,8 @@ function CVs() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [viewingCV, setViewingCV] = useState(null);
   const [editingCV, setEditingCV] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -225,12 +228,12 @@ function CVs() {
   const handleCloseAttributesModal = () => {
     setViewingCV(null);
   };
-  const handleDeleteSelected = async () => {
-    const confirmed = window.confirm(
-      `Delete ${selectedCVs.length} selected CV(s)?`,
-    );
+  const handleDeleteSelected = () => {
+    setShowDeleteModal(true);
+  };
 
-    if (!confirmed) return;
+  const confirmDelete = async () => {
+    setDeleting(true);
 
     try {
       const response = await apiFetch(API_URL, {
@@ -250,16 +253,22 @@ function CVs() {
       setCVs((prev) => prev.filter((cv) => !selectedCVs.includes(cv.id)));
 
       setSelectedCVs([]);
+
       setNotification({
         type: "success",
         message: "CV(s) deleted successfully.",
       });
+
+      setShowDeleteModal(false);
     } catch (err) {
       console.error(err);
+
       setNotification({
         type: "danger",
-        message: "Unable to delete CV(s).",
+        message: "Unable to delete CVs.",
       });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -375,6 +384,21 @@ function CVs() {
             onClose={() => setIsAddModalOpen(false)}
           />
         )
+      )}
+      {showDeleteModal && (
+        <Modal
+          title="Delete CVs"
+          size="sm"
+          onClose={() => setShowDeleteModal(false)}
+        >
+          <ConfirmDeleteModal
+            itemName="CV"
+            count={selectedCVs.length}
+            loading={deleting}
+            onCancel={() => setShowDeleteModal(false)}
+            onConfirm={confirmDelete}
+          />
+        </Modal>
       )}
     </div>
   );

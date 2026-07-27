@@ -1,4 +1,11 @@
-function Modal({ title, children, onClose }) {
+function Modal({ title, children, onClose, size = "md" }) {
+  const modalClass =
+    size === "sm"
+      ? "modal-dialog modal-dialog-centered modal-sm"
+      : size === "lg"
+        ? "modal-dialog modal-dialog-centered modal-lg"
+        : "modal-dialog modal-dialog-centered";
+
   return (
     <>
       <div
@@ -6,7 +13,7 @@ function Modal({ title, children, onClose }) {
         style={{ display: "block" }}
         tabIndex="-1"
       >
-        <div className="modal-dialog modal-lg">
+        <div className={modalClass}>
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">{title}</h5>
