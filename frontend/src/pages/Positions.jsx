@@ -69,7 +69,7 @@ const Positions = () => {
       normalizedSearchText === "" ||
       position.title.toLowerCase().includes(normalizedSearchText) ||
       position.location.toLowerCase().includes(normalizedSearchText);
-
+s
     const matchesDepartment =
       department === "" || position.department === department;
 

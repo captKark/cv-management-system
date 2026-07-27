@@ -105,7 +105,7 @@ function Login() {
                 >
                   <i className="bi bi-file-earmark-person fs-2"></i>
                 </div>
-                <h3 className="fw-bold text-dark mb-1">Welcome Back</h3>
+                <h3 className="fw-bold text-dark mb-1">CV Management System</h3>
                 <p className="text-muted small">
                   Manage positions & candidate CVs efficiently
                 </p>
