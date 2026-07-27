@@ -17,7 +17,10 @@ function CVs() {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+  });
   const [searchText, setSearchText] = useState("");
   const [selectedCVs, setSelectedCVs] = useState([]);
 
@@ -120,11 +123,17 @@ function CVs() {
       const createdCV = await response.json();
 
       setCVs((prev) => [...prev, createdCV]);
-
+      setNotification({
+        type: "success",
+        message: "CV created successfully.",
+      });
       setIsAddModalOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Unable to create CV.");
+      asetNotification({
+        type: "danger",
+        message: "Unable to create CV.",
+      });
     }
   };
 
@@ -168,12 +177,19 @@ function CVs() {
       setCVs((prev) =>
         prev.map((cv) => (cv.id === updatedCV.id ? updatedCV : cv)),
       );
+      setNotification({
+        type: "success",
+        message: "CV updated successfully.",
+      });
 
       handleCloseEditModal();
       setSelectedCVs([]);
     } catch (err) {
       console.error(err);
-      alert("Unable to update CV.");
+      setNotification({
+        type: "danger",
+        message: "Unable to update CV.",
+      });
     }
   };
   const handleOpenAttributesModal = () => {
@@ -234,9 +250,16 @@ function CVs() {
       setCVs((prev) => prev.filter((cv) => !selectedCVs.includes(cv.id)));
 
       setSelectedCVs([]);
+      setNotification({
+        type: "success",
+        message: "CV(s) deleted successfully.",
+      });
     } catch (err) {
       console.error(err);
-      alert("Unable to delete CVs.");
+      setNotification({
+        type: "danger",
+        message: "Unable to delete CV(s).",
+      });
     }
   };
 
@@ -251,14 +274,17 @@ function CVs() {
   }, [currentPage, totalPages]);
 
   useEffect(() => {
-    if (!successMessage) return;
+    if (!notification.message) return;
 
     const timer = setTimeout(() => {
-      setSuccessMessage("");
+      setNotification({
+        type: "",
+        message: "",
+      });
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [successMessage]);
+  }, [notification]);
   if (loading) {
     return <p>Loading CVs...</p>;
   }
@@ -283,7 +309,25 @@ function CVs() {
         onViewAttributes={handleOpenAttributesModal}
         canViewAttributes={selectedCVs.length === 1}
       />
+      {notification.message && (
+        <div
+          className={`alert alert-${notification.type} alert-dismissible fade show mt-3`}
+          role="alert"
+        >
+          {notification.message}
 
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() =>
+              setNotification({
+                type: "",
+                message: "",
+              })
+            }
+          />
+        </div>
+      )}
       <Searchbar
         searchText={searchText}
         setSearchText={setSearchText}

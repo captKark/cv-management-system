@@ -13,8 +13,8 @@ function Header() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
       <div className="container">
-        <Link className="navbar-brand fw-bold" to="/dashboard">
-          CV Management System
+        <Link className="navbar-brand" to="/dashboard">
+          <div className="fw-bold fs-5">CV Management System</div>
         </Link>
 
         <button
@@ -27,46 +27,46 @@ function Header() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-          <div className="navbar-nav me-auto">
-            <NavLink className="nav-link" to="/dashboard">
+          <div className="navbar-nav mx-auto gap-2">
+            <NavLink className="nav-link px-3" to="/dashboard">
               Dashboard
             </NavLink>
 
             {(user?.role === "admin" || user?.role === "recruiter") && (
-              <>
-                <NavLink className="nav-link" to="/positions">
-                  Positions
-                </NavLink>
-              </>
+              <NavLink className="nav-link px-3" to="/positions">
+                Positions
+              </NavLink>
             )}
 
-            <NavLink className="nav-link" to="/cvs">
+            <NavLink className="nav-link px-3" to="/cvs">
               CVs
             </NavLink>
 
             {user?.role === "admin" && (
               <>
-                <NavLink className="nav-link" to="/attributes">
+                <NavLink className="nav-link px-3" to="/attributes">
                   Attributes
                 </NavLink>
 
-                <NavLink className="nav-link" to="/templates">
+                <NavLink className="nav-link px-3" to="/templates">
                   Templates
                 </NavLink>
               </>
             )}
 
-            <NavLink className="nav-link" to="/about">
+            <NavLink className="nav-link px-3" to="/about">
               About
             </NavLink>
           </div>
 
           {user && (
             <div className="d-flex align-items-center gap-3">
-              <span className="text-white">{user.name}</span>
+              <div className="text-end">
+                <div className="fw-semibold text-white">{user.name}</div>
+              </div>
 
               <button
-                className="btn btn-outline-light btn-sm"
+                className="btn btn-light btn-sm px-3"
                 onClick={handleLogout}
               >
                 Logout

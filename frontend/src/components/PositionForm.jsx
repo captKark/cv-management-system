@@ -7,6 +7,7 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
   const [department, setDepartment] = useState(initialValues?.department ?? "");
   const [location, setLocation] = useState(initialValues?.location ?? "");
   const [status, setStatus] = useState(initialValues?.status ?? "");
+  const [validationError, setValidationError] = useState("");
   const [visibility, setVisibility] = useState(
     initialValues?.visibility ?? "Public",
   );
@@ -31,9 +32,11 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
       !status.trim() ||
       !visibility.trim()
     ) {
-      alert("All fields are required.");
+      setValidationError("Please complete all required fields.");
       return;
     }
+
+    setValidationError("");
 
     onSubmit({
       title: title.trim(),
@@ -52,7 +55,9 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
         <label className="form-label">Title</label>
-
+        {validationError && (
+          <div className="alert alert-danger py-2 mb-3">{validationError}</div>
+        )}
         <input
           type="text"
           className="form-control"

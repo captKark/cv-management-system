@@ -13,54 +13,70 @@ function Toolbar({
   canViewAttributes,
 }) {
   return (
-    <div className="card shadow-sm mb-3">
-      <div className="d-flex flex-wrap gap-2 mb-4">
-        <button className="btn btn-primary" onClick={onAdd}>
-          + {addLabel}
-        </button>
+    <div className="d-flex flex-wrap gap-2 mb-4 border-bottom pb-3">
+      <button className="btn btn-primary shadow-sm" onClick={onAdd}>
+        + {addLabel}
+      </button>
 
+      <button
+        className={`btn shadow-sm ${
+          canEdit ? "btn-warning" : "btn-light text-secondary border"
+        }`}
+        onClick={onEditSelected}
+        disabled={!canEdit}
+      >
+        Edit Selected
+      </button>
+
+      {onViewAttributes && (
         <button
-          className="btn btn-warning"
-          onClick={onEditSelected}
-          disabled={!canEdit}
+          className={`btn shadow-sm ${
+            canViewAttributes
+              ? "btn-info text-white"
+              : "btn-light text-secondary border"
+          }`}
+          onClick={onViewAttributes}
+          disabled={!canViewAttributes}
         >
-          Edit Selected
+          View Attributes
         </button>
-        {onViewAttributes && (
-          <button
-            className="btn btn-info"
-            onClick={onViewAttributes}
-            disabled={!canViewAttributes}
-          >
-            View Attributes
-          </button>
-        )}
-        {onAssignAttributes && (
-          <button
-            className="btn btn-info text-white"
-            onClick={onAssignAttributes}
-            disabled={!canAssignAttributes}
-          >
-            Assign Attributes
-          </button>
-        )}
-        {onDuplicateSelected && (
-          <button
-            className="btn btn-secondary"
-            onClick={onDuplicateSelected}
-            disabled={!canDuplicate}
-          >
-            Duplicate Selected
-          </button>
-        )}
+      )}
+
+      {onAssignAttributes && (
         <button
-          className="btn btn-danger"
-          onClick={onDeleteSelected}
-          disabled={!canDelete}
+          className={`btn shadow-sm ${
+            canAssignAttributes
+              ? "btn-info text-white"
+              : "btn-light text-secondary border"
+          }`}
+          onClick={onAssignAttributes}
+          disabled={!canAssignAttributes}
         >
-          Delete Selected
+          Assign Attributes
         </button>
-      </div>
+      )}
+
+      {onDuplicateSelected && (
+        <button
+          className={`btn shadow-sm ${
+            canDuplicate ? "btn-secondary" : "btn-light text-secondary border"
+          }`}
+          onClick={onDuplicateSelected}
+          disabled={!canDuplicate}
+        >
+          Duplicate Selected
+        </button>
+      )}
+
+      <button
+        className={`btn shadow-sm ${
+          canDelete ? "btn-danger" : "btn-light text-secondary border"
+        }`}
+        onClick={onDeleteSelected}
+        disabled={!canDelete}
+      >
+        Delete Selected
+      </button>
     </div>
   );
 }

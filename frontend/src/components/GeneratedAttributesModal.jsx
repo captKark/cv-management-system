@@ -11,7 +11,7 @@ function GeneratedAttributesModal({ cv, onClose, onSaved }) {
       value: item.value ?? "",
     })),
   );
-
+  const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (attributeId, value) => {
@@ -62,12 +62,21 @@ function GeneratedAttributesModal({ cv, onClose, onSaved }) {
 
       onSaved(values);
 
-      alert("Attribute values saved successfully.");
+      setMessage({
+        type: "success",
+        text: "Attribute values saved successfully.",
+      });
 
-      onClose();
+      setTimeout(() => {
+        onClose();
+      }, 1200);
     } catch (err) {
       console.error(err);
-      alert("Unable to save attribute values.");
+
+      setMessage({
+        type: "danger",
+        text: "Unable to save attribute values.",
+      });
     } finally {
       setLoading(false);
     }
@@ -75,6 +84,11 @@ function GeneratedAttributesModal({ cv, onClose, onSaved }) {
 
   return (
     <>
+      {message && (
+        <div className={`alert alert-${message.type} mb-3`} role="alert">
+          {message.text}
+        </div>
+      )}
       <div className="table-responsive">
         <table className="table table-bordered align-middle">
           <thead>

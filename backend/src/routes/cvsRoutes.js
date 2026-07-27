@@ -18,12 +18,12 @@ router.get(
   authorize("admin", "recruiter", "candidate"),
   getAllCVs,
 );
-router.post("/", authenticate, authorize("admin", "candidate"), createCV);
-router.put("/:id", authenticate, authorize("admin", "candidate"), updateCV);
+router.post("/", authenticate, authorize("admin","recruiter","candidate"), createCV);
+router.put("/:id", authenticate, authorize("admin","recruiter","candidate"), updateCV);
 router.put(
   "/:id/attributes",
   authenticate,
-  authorize("admin", "candidate"),
+  authorize("admin","recruiter","candidate"),
   updateAttributeValues,
 );
 router.delete("/", authenticate, authorize("admin"), deleteCVs);

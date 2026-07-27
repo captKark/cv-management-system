@@ -8,6 +8,10 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [notification, setNotification] = useState({
+    message: "",
+    type: "",
+  });
 
   useEffect(() => {
     const loadData = async () => {
@@ -50,17 +54,17 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
 
     try {
       const response = await apiFetch(
-  `${POSITIONS_API}/${positionId}/attributes`,
-  {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({  
-      attributeIds: selectedAttributes,
-    }),
-  },
-);
+        `${POSITIONS_API}/${positionId}/attributes`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            attributeIds: selectedAttributes,
+          }),
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save.");
@@ -69,7 +73,11 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
       onSaved();
     } catch (err) {
       console.error(err);
-      alert("Unable to save attributes.");
+
+      setNotification({
+        message: "Unable to save attributes.",
+        type: "danger",
+      });
     } finally {
       setSaving(false);
     }
@@ -91,6 +99,25 @@ function AssignAttributesModal({ positionId, onClose, onSaved }) {
         </div>
       ) : (
         <>
+          {notification.message && (
+            <div
+              className={`alert alert-${notification.type} alert-dismissible fade show mb-3`}
+              role="alert"
+            >
+              {notification.message}
+
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() =>
+                  setNotification({
+                    message: "",
+                    type: "",
+                  })
+                }
+              />
+            </div>
+          )}
           <div
             className="border rounded p-3"
             style={{

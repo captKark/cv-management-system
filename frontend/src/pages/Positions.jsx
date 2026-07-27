@@ -30,7 +30,10 @@ const Positions = () => {
   const [viewingPosition, setViewingPosition] = useState(null);
   const [editingPosition, setEditingPosition] = useState(null);
 
-  const [successMessage, setSuccessMessage] = useState("");
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+  });
   const fetchPositions = async () => {
     setLoading(true);
     setError(null);
@@ -123,14 +126,17 @@ const Positions = () => {
   }, [currentPage, totalPages]);
 
   useEffect(() => {
-    if (!successMessage) return;
+    if (!notification.message) return;
 
     const timer = setTimeout(() => {
-      setSuccessMessage("");
+      setNotification({
+        type: "",
+        message: "",
+      });
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [successMessage]);
+  }, [notification]);
 
   const handleDeleteSelected = async () => {
     const confirmed = window.confirm(
@@ -157,12 +163,17 @@ const Positions = () => {
       setPositions((prev) =>
         prev.filter((position) => !selectedPositions.includes(position.id)),
       );
-      setSuccessMessage("Position(s) deleted successfully.");
-
+      setNotification({
+        type: "success",
+        message: "Position(s) deleted successfully.",
+      });
       setSelectedPositions([]);
     } catch (err) {
       console.error(err);
-      alert("Unable to delete positions.");
+      setNotification({
+        type: "danger",
+        message: "Unable to delete positions.",
+      });
     }
   };
 
@@ -191,11 +202,17 @@ const Positions = () => {
       const createdPosition = await response.json();
 
       setPositions((prev) => [...prev, createdPosition]);
-      setSuccessMessage("Position created successfully.");
+      setNotification({
+        type: "success",
+        message: "Position created successfully.",
+      });
       handleCloseAddModal();
     } catch (err) {
       console.error(err);
-      alert("Unable to create position.");
+      setNotification({
+        type: "danger",
+        message: "Unable to create position.",
+      });
     }
   };
 
@@ -234,13 +251,18 @@ const Positions = () => {
           position.id === updatedPosition.id ? updatedPosition : position,
         ),
       );
-      setSuccessMessage("Position updated successfully.");
-
+      setNotification({
+        type: "success",
+        message: "Position updated successfully.",
+      });
       handleCloseEditModal();
       setSelectedPositions([]);
     } catch (err) {
       console.error(err);
-      alert("Unable to update position.");
+      setNotification({
+        type: "danger",
+        message: "Unable to update position.",
+      });
     }
   };
 
@@ -264,11 +286,17 @@ const Positions = () => {
       const duplicatedPosition = await response.json();
 
       setPositions((prev) => [...prev, duplicatedPosition]);
-      setSuccessMessage("Position duplicated successfully.");
+      setNotification({
+        type: "success",
+        message: "Position duplicated successfully.",
+      });
       setSelectedPositions([]);
     } catch (err) {
       console.error(err);
-      alert("Unable to duplicate position.");
+      setNotification({
+        type: "danger",
+        message: "Unable to duplicate position.",
+      });
     }
   };
 
@@ -326,14 +354,22 @@ const Positions = () => {
         onViewAttributes={handleOpenAttributesView}
         canViewAttributes={selectedPositions.length === 1}
       />
-      {successMessage && (
-        <div className="alert alert-success alert-dismissible fade show mt-3">
-          {successMessage}
+      {notification.message && (
+        <div
+          className={`alert alert-${notification.type} alert-dismissible fade show mt-3`}
+          role="alert"
+        >
+          {notification.message}
 
           <button
             type="button"
             className="btn-close"
-            onClick={() => setSuccessMessage("")}
+            onClick={() =>
+              setNotification({
+                type: "",
+                message: "",
+              })
+            }
           />
         </div>
       )}
@@ -399,7 +435,7 @@ const Positions = () => {
             onSaved={async () => {
               await fetchPositions();
               handleCloseAssignAttributesModal();
-              setSuccessMessage("Attributes assigned successfully.");
+              setNotification("Attributes assigned successfully.");
             }}
           />
         </Modal>

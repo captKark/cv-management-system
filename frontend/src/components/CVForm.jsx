@@ -18,18 +18,21 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
   );
 
   const [positionId, setPositionId] = useState(initialValues?.positionId ?? "");
-
+  const [validationError, setValidationError] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (
       !candidateName.trim() ||
       !positionTitle.trim() ||
+      !positionId ||
       (!isCandidate && !status.trim())
     ) {
-      alert("All fields are required.");
+      setValidationError("Please complete all required fields.");
       return;
     }
+
+    setValidationError("");
 
     onSubmit({
       candidateName: candidateName.trim(),
@@ -46,8 +49,12 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
         <h2 className="card-title mb-4">
           {initialValues ? "Edit CV" : "Create CV"}
         </h2>
-
         <form onSubmit={handleSubmit}>
+          {validationError && (
+            <div className="alert alert-danger py-2 mb-3">
+              {validationError}
+            </div>
+          )}
           <div className="mb-3">
             <label className="form-label">Candidate Name</label>
 

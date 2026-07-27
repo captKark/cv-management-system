@@ -23,8 +23,10 @@ const Attributes = () => {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingAttribute, setEditingAttribute] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("");
-
+  const [notification, setNotification] = useState({
+    message: "",
+    type: "",
+  });
   useEffect(() => {
     const fetchAttributes = async () => {
       setLoading(true);
@@ -112,14 +114,17 @@ const Attributes = () => {
   }, [currentPage, totalPages]);
 
   useEffect(() => {
-    if (!successMessage) return;
+    if (!notification.message) return;
 
     const timer = setTimeout(() => {
-      setSuccessMessage("");
+      setNotification({
+        message: "",
+        type: "",
+      });
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [successMessage]);
+  }, [notification]);
 
   const handleDeleteSelected = async () => {
     const confirmed = window.confirm(
@@ -146,12 +151,17 @@ const Attributes = () => {
       setAttributes((prev) =>
         prev.filter((attribute) => !selectedAttributes.includes(attribute.id)),
       );
-      setSuccessMessage("Attribute(s) deleted successfully.");
-
+      setNotification({
+        message: "Attribute(s) deleted successfully.",
+        type: "success",
+      });
       setSelectedAttributes([]);
     } catch (err) {
       console.error(err);
-      alert("Unable to delete attributes.");
+      setNotification({
+        message: "Unable to delete attribute(s).",
+        type: "danger",
+      });
     }
   };
 
@@ -180,11 +190,17 @@ const Attributes = () => {
       const createdAttribute = await response.json();
 
       setAttributes((prev) => [...prev, createdAttribute]);
-      setSuccessMessage("Attribute created successfully.");
+      setNotification({
+        message: "Attribute created successfully.",
+        type: "success",
+      });
       handleCloseAddModal();
     } catch (err) {
       console.error(err);
-      alert("Unable to create attribute.");
+      setNotification({
+        message: "Unable to create attribute.",
+        type: "danger",
+      });
     }
   };
 
@@ -223,13 +239,18 @@ const Attributes = () => {
           attribute.id === updatedAttribute.id ? updatedAttribute : attribute,
         ),
       );
-      setSuccessMessage("Attribute updated successfully.");
-
+      setNotification({
+        message: "Attribute updated successfully.",
+        type: "success",
+      });
       handleCloseEditModal();
       setSelectedAttributes([]);
     } catch (err) {
       console.error(err);
-      alert("Unable to update attribute.");
+      setNotification({
+        message: "Unable to update attribute.",
+        type: "danger",
+      });
     }
   };
 
@@ -261,14 +282,22 @@ const Attributes = () => {
         canDelete={selectedAttributes.length > 0}
         addLabel="Add Attribute"
       />
-      {successMessage && (
-        <div className="alert alert-success alert-dismissible fade show mt-3">
-          {successMessage}
+      {notification.message && (
+        <div
+          className={`alert alert-${notification.type} alert-dismissible fade show mt-3 shadow-sm`}
+          role="alert"
+        >
+          {notification.message}
 
           <button
             type="button"
             className="btn-close"
-            onClick={() => setSuccessMessage("")}
+            onClick={() =>
+              setNotification({
+                message: "",
+                type: "",
+              })
+            }
           />
         </div>
       )}

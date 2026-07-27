@@ -6,14 +6,16 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
   const [name, setName] = useState(initialValues?.name ?? "");
   const [category, setCategory] = useState(initialValues?.category ?? "");
   const [type, setType] = useState(initialValues?.type ?? "");
-
+  const [validationError, setValidationError] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!name.trim() || !category || !type) {
-      alert("All fields are required.");
+      setValidationError("Please complete all required fields.");
       return;
     }
+
+    setValidationError("");
 
     onSubmit({
       name: name.trim(),
@@ -24,6 +26,9 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
 
   return (
     <form onSubmit={handleSubmit}>
+      {validationError && (
+        <div className="alert alert-danger py-2 mb-3">{validationError}</div>
+      )}
       <div className="mb-4">
         <h4 className="fw-bold mb-1">
           {initialValues ? "Edit Attribute" : "Add Attribute"}
@@ -37,9 +42,7 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label fw-semibold">
-          Attribute Name
-        </label>
+        <label className="form-label fw-semibold">Attribute Name</label>
 
         <input
           type="text"
@@ -51,9 +54,7 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label fw-semibold">
-          Category
-        </label>
+        <label className="form-label fw-semibold">Category</label>
 
         <select
           className="form-select"
@@ -63,10 +64,7 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
           <option value="">Select category</option>
 
           {ATTRIBUTE_CATEGORIES.map((category) => (
-            <option
-              key={category}
-              value={category}
-            >
+            <option key={category} value={category}>
               {category}
             </option>
           ))}
@@ -74,9 +72,7 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
       </div>
 
       <div className="mb-4">
-        <label className="form-label fw-semibold">
-          Type
-        </label>
+        <label className="form-label fw-semibold">Type</label>
 
         <select
           className="form-select"
@@ -86,10 +82,7 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
           <option value="">Select type</option>
 
           {ATTRIBUTE_TYPES.map((type) => (
-            <option
-              key={type}
-              value={type}
-            >
+            <option key={type} value={type}>
               {type}
             </option>
           ))}
@@ -105,10 +98,7 @@ function AttributeForm({ initialValues, onSubmit, onClose }) {
           Cancel
         </button>
 
-        <button
-          type="submit"
-          className="btn btn-primary"
-        >
+        <button type="submit" className="btn btn-primary">
           {initialValues ? "Update Attribute" : "Create Attribute"}
         </button>
       </div>
