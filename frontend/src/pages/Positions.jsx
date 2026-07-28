@@ -69,7 +69,7 @@ const Positions = () => {
       normalizedSearchText === "" ||
       position.title.toLowerCase().includes(normalizedSearchText) ||
       position.location.toLowerCase().includes(normalizedSearchText);
-s
+
     const matchesDepartment =
       department === "" || position.department === department;
 
@@ -340,6 +340,8 @@ s
     );
   }
 
+  const handleClearSelection = () => setSelectedPositions([]);
+
   if (error) {
     return <div className="alert alert-danger mt-3">{error}</div>;
   }
@@ -363,6 +365,8 @@ s
         canAssignAttributes={selectedPositions.length === 1}
         onViewAttributes={handleOpenAttributesView}
         canViewAttributes={selectedPositions.length === 1}
+        selectedCount={selectedPositions.length}
+        onClearSelection={handleClearSelection}
       />
       {notification.message && (
         <div

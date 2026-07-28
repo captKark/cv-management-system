@@ -11,13 +11,14 @@ function Toolbar({
   canAssignAttributes,
   onViewAttributes,
   canViewAttributes,
+  selectedCount,
+  onClearSelection,
 }) {
   return (
     <div className="d-flex flex-wrap gap-2 mb-4 border-bottom pb-3">
       <button className="btn btn-primary shadow-sm" onClick={onAdd}>
         + {addLabel}
       </button>
-
       <button
         className={`btn shadow-sm ${
           canEdit ? "btn-warning" : "btn-light text-secondary border"
@@ -27,7 +28,6 @@ function Toolbar({
       >
         Edit Selected
       </button>
-
       {onViewAttributes && (
         <button
           className={`btn shadow-sm ${
@@ -41,7 +41,6 @@ function Toolbar({
           View Attributes
         </button>
       )}
-
       {onAssignAttributes && (
         <button
           className={`btn shadow-sm ${
@@ -55,7 +54,6 @@ function Toolbar({
           Assign Attributes
         </button>
       )}
-
       {onDuplicateSelected && (
         <button
           className={`btn shadow-sm ${
@@ -67,7 +65,6 @@ function Toolbar({
           Duplicate Selected
         </button>
       )}
-
       <button
         className={`btn shadow-sm ${
           canDelete ? "btn-danger" : "btn-light text-secondary border"
@@ -75,8 +72,24 @@ function Toolbar({
         onClick={onDeleteSelected}
         disabled={!canDelete}
       >
-        Delete Selected
+        Delete ({selectedCount})
       </button>
+      <button
+        className={`btn shadow-sm ${
+          selectedCount > 0
+            ? "btn-light text-dark border-secondary"
+            : "btn-light text-secondary border"
+        }`}
+        onClick={onClearSelection}
+        disabled={selectedCount === 0}
+      >
+        Clear Selection
+      </button>
+      <div className="ms-auto text-secondary fs-6 fw-medium">
+        {selectedCount === 0
+          ? "No Rows Selected"
+          : `Selected: ${selectedCount}`}
+      </div>
     </div>
   );
 }

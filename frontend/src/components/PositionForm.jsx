@@ -168,7 +168,11 @@ function PositionForm({ initialValues, onSubmit, onClose }) {
           Cancel
         </button>
 
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={!title || !department}
+        >
           {initialValues ? "Update" : "Create"}
         </button>
       </div>

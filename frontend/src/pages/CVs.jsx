@@ -317,6 +317,7 @@ function CVs() {
         addLabel="Add CV"
         onViewAttributes={handleOpenAttributesModal}
         canViewAttributes={selectedCVs.length === 1}
+        selectedCount={selectedCVs.length}
       />
       {notification.message && (
         <div
