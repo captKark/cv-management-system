@@ -292,6 +292,7 @@ const Attributes = () => {
         canEdit={selectedAttributes.length === 1}
         canDelete={selectedAttributes.length > 0}
         addLabel="Add Attribute"
+        selectedCount={selectedAttributes.length}
       />
       {notification.message && (
         <div
