@@ -6,16 +6,24 @@ export const getStoredAuth = () => {
   return stored ? JSON.parse(stored) : null;
 };
 
-export const getCurrentUser = () => {
-  const auth = getStoredAuth();
+export const saveAuth = (auth) => {
+  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(auth));
+};
 
-  return auth?.user ?? null;
+export const clearAuth = () => {
+  localStorage.removeItem(USER_STORAGE_KEY);
+};
+
+export const getCurrentUser = () => {
+  return getStoredAuth()?.user ?? null;
 };
 
 export const getAuthToken = () => {
-  const auth = getStoredAuth();
+  return getStoredAuth()?.token ?? null;
+};
 
-  return auth?.token ?? null;
+export const isAuthenticated = () => {
+  return Boolean(getAuthToken());
 };
 
 export const hasRole = (...roles) => {
@@ -23,6 +31,18 @@ export const hasRole = (...roles) => {
 
   return user && roles.includes(user.role);
 };
+export const refreshStoredUser = (user) => {
+  const auth = getStoredAuth();
+
+  if (!auth?.token) {
+    return;
+  }
+
+  saveAuth({
+    ...auth,
+    user,
+  });
+};
 export const logout = () => {
-  localStorage.removeItem(USER_STORAGE_KEY);
+  clearAuth();
 };

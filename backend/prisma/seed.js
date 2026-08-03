@@ -1,15 +1,42 @@
 const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 
 async function main() {
-
   await prisma.cVAttributeValue.deleteMany();
   await prisma.positionAttribute.deleteMany();
   await prisma.cV.deleteMany();
   await prisma.attribute.deleteMany();
   await prisma.position.deleteMany();
+  await prisma.user.deleteMany();
 
+  const adminPassword = await bcrypt.hash("admin123", 10);
+  const recruiterPassword = await bcrypt.hash("recruit123", 10);
+  const candidatePassword = await bcrypt.hash("candidate123", 10);
+
+  await prisma.user.createMany({
+    data: [
+      {
+        name: "Administrator",
+        email: "admin@test.com",
+        passwordHash: adminPassword,
+        role: "admin",
+      },
+      {
+        name: "Recruiter",
+        email: "recruiter@test.com",
+        passwordHash: recruiterPassword,
+        role: "recruiter",
+      },
+      {
+        name: "Candidate",
+        email: "candidate@test.com",
+        passwordHash: candidatePassword,
+        role: "candidate",
+      },
+    ],
+  });
   const frontend = await prisma.position.create({
     data: {
       title: "Frontend Developer",

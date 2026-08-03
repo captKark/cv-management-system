@@ -1,59 +1,94 @@
-const jwt = require("jsonwebtoken");
-const users = [
-  {
-    id: 1,
-    email: "admin@test.com",
-    password: "admin123",
-    role: "admin",
-    name: "Administrator",
-  },
-  {
-    id: 2,
-    email: "recruiter@test.com",
-    password: "recruit123",
-    role: "recruiter",
-    name: "Recruiter",
-  },
-  {
-    id: 3,
-    email: "candidate@test.com",
-    password: "candidate123",
-    role: "candidate",
-    name: "Candidate",
-  },
-];
+const prisma = require("../lib/prisma");
+const bcrypt = require("bcrypt");
 
-const login = (email, password) => {
-  const user = users.find(
-    (user) =>
-      user.email === email &&
-      user.password === password,
-  );
+const { generateToken } = require("../utils/jwt");
 
-  if (!user) {
+const buildAuthResponse = (user) => {
+  return {
+    token: generateToken(user),
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  };
+};
+
+const login = async (email, password) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!user || !user.isActive) {
     return null;
   }
 
-  const { password: _, ...userWithoutPassword } = user;
-
-  const token = jwt.sign(
-    {
-      id: user.id,
-      role: user.role,
-      email: user.email,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "8h",
-    },
+  const passwordMatches = await bcrypt.compare(
+    password,
+    user.passwordHash,
   );
 
-  return {
-    token,
-    user: userWithoutPassword,
-  };
+  if (!passwordMatches) {
+    return null;
+  }
+
+  return buildAuthResponse(user);
+};
+
+const register = async ({
+  name,
+  email,
+  password,
+}) => {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (existingUser) {
+    throw new Error("Email is already registered.");
+  }
+
+  const passwordHash = await bcrypt.hash(
+    password,
+    10,
+  );
+
+  const user = await prisma.user.create({
+    data: {
+      name,
+      email,
+      passwordHash,
+      role: "candidate",
+    },
+  });
+
+  return buildAuthResponse(user);
+};
+
+const getCurrentUser = async (id) => {
+  return prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 };
 
 module.exports = {
   login,
+  register,
+  getCurrentUser,
 };

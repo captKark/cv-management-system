@@ -4,12 +4,13 @@ const positionsRoutes = require("./routes/positionsRoutes");
 const authRoutes = require("./routes/authRoutes");
 const cvsRoutes = require("./routes/cvsRoutes");
 const attributeRoutes = require("./routes/attributeRoutes");
-
+const userRoutes = require("./routes/userRoutes");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/attributes", attributeRoutes);
+app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.json({

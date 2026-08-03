@@ -4,6 +4,7 @@ export const apiFetch = async (url, options = {}) => {
   const token = getAuthToken();
 
   const headers = {
+    "Content-Type": "application/json",
     ...(options.headers || {}),
   };
 
