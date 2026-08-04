@@ -17,9 +17,10 @@ const createCV = async (req, res) => {
 
   res.status(201).json(createdCV);
 };
-const id = Number(req.params.id);
 
-if (req.user.role === "candidate") {
+const updateCV = async (req, res) => {
+  const id = Number(req.params.id);
+
   const existingCV = await cvsService.getCVById(id);
 
   if (!existingCV) {
@@ -28,27 +29,16 @@ if (req.user.role === "candidate") {
     });
   }
 
-  if (existingCV.candidateId !== req.user.id) {
+  if (
+    req.user.role === "candidate" &&
+    existingCV.candidateId !== req.user.id
+  ) {
     return res.status(403).json({
       message: "You can only modify your own CVs.",
     });
   }
-}
-const updateCV = async (req, res) => {
-  const id = Number(req.params.id);
 
-  const cvData = { ...req.body };
-
-  if (req.user.role === "candidate") {
-    cvData.candidateId = req.user.id;
-  }
-
-  const updatedCV = await cvsService.updateCV(id, cvData);
-  if (!updatedCV) {
-    return res.status(404).json({
-      message: "CV not found.",
-    });
-  }
+  const updatedCV = await cvsService.updateCV(id, req.body);
 
   res.json(updatedCV);
 };
