@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import RegisterForm from "../components/RegisterForm";
+
 import { register } from "../services/authService";
 import { saveAuth } from "../utils/auth";
 
@@ -12,47 +14,26 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =useState(false);
   const [error, setError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const redirectToDashboard = () => {
+    navigate("/dashboard");
+  };
 
   const startLoading = () => {
     setLoading(true);
+    setError("");
   };
 
   const stopLoading = () => {
     setLoading(false);
   };
 
-  const clearError = () => {
-    setError("");
-  };
-
-  const updateField = (setter) => (e) => {
-    setter(e.target.value);
-  };
-
   const togglePassword = () => {
-    setShowPassword((value) => !value);
-  };
-
-  const toggleConfirmPassword = () => {
-    setShowConfirmPassword((value) => !value);
-  };
-
-  const passwordsMatch = () => {
-    return password === confirmPassword;
-  };
-
-  const validateForm = () => {
-    if (!passwordsMatch()) {
-      setError("Passwords do not match.");
-      return false;
-    }
-
-    return true;
+    setShowPassword((previous) => !previous);
   };
 
   const buildUser = () => {
@@ -63,8 +44,10 @@ function Register() {
     };
   };
 
-  const redirectToDashboard = () => {
-    navigate("/dashboard");
+  const validatePasswords = () => {
+    if (password !== confirmPassword) {
+      throw new Error("Passwords do not match.");
+    }
   };
 
   const handleSuccess = (auth) => {
@@ -80,14 +63,10 @@ function Register() {
     e.preventDefault();
 
     startLoading();
-    clearError();
-
-    if (!validateForm()) {
-      stopLoading();
-      return;
-    }
 
     try {
+      validatePasswords();
+
       const auth = await register(buildUser());
 
       handleSuccess(auth);
@@ -99,76 +78,63 @@ function Register() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Register</h2>
+    <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
+      <div className="container">
+        <div className="row justify-content-center align-items-center g-5">
 
-      {error && <p>{error}</p>}
+          <div className="col-lg-5">
+            <div className="text-center text-lg-start">
+              <h1 className="display-5 fw-bold mb-3">
+                Join the
+                <br />
+                CV Management System
+              </h1>
 
-      <div>
-        <label>Name</label>
+              <p className="lead text-muted">
+                Create your candidate account and start applying
+                for positions, managing your CVs, and tracking
+                your recruitment journey.
+              </p>
 
-        <input
-          type="text"
-          value={name}
-          onChange={updateField(setName)}
-          required
-        />
+              <div className="mt-4">
+                <span className="badge bg-primary me-2">
+                  Candidate Portal
+                </span>
+
+                <span className="badge bg-success me-2">
+                  Secure
+                </span>
+
+                <span className="badge bg-dark">
+                  Fast Registration
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-5">
+            <RegisterForm
+              name={name}
+              email={email}
+              password={password}
+              confirmPassword={confirmPassword}
+              error={error}
+              loading={loading}
+              showPassword={showPassword}
+              onNameChange={(e) => setName(e.target.value)}
+              onEmailChange={(e) => setEmail(e.target.value)}
+              onPasswordChange={(e) => setPassword(e.target.value)}
+              onConfirmPasswordChange={(e) =>
+                setConfirmPassword(e.target.value)
+              }
+              onTogglePassword={togglePassword}
+              onSubmit={handleSubmit}
+            />
+          </div>
+
+        </div>
       </div>
-
-      <div>
-        <label>Email</label>
-
-        <input
-          type="email"
-          value={email}
-          onChange={updateField(setEmail)}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Password</label>
-
-        <input
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={updateField(setPassword)}
-          required
-        />
-
-        <button
-          type="button"
-          onClick={togglePassword}
-        >
-          {showPassword ? "Hide" : "Show"}
-        </button>
-      </div>
-
-      <div>
-        <label>Confirm Password</label>
-
-        <input
-          type={showConfirmPassword ? "text" : "password"}
-          value={confirmPassword}
-          onChange={updateField(setConfirmPassword)}
-          required
-        />
-
-        <button
-          type="button"
-          onClick={toggleConfirmPassword}
-        >
-          {showConfirmPassword ? "Hide" : "Show"}
-        </button>
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-      >
-        {loading ? "Registering..." : "Register"}
-      </button>
-    </form>
+    </div>
   );
 }
 

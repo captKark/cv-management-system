@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import LoginForm from "../components/LoginForm";
+import DemoAccounts from "../components/DemoAccounts";
+
 import { login } from "../services/authService";
 import { saveAuth } from "../utils/auth";
 
@@ -15,21 +18,8 @@ function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const togglePassword = () => {
-    setShowPassword((previous) => !previous);
-  };
-
   const redirectToDashboard = () => {
     navigate("/dashboard");
-  };
-
-  const startLoading = () => {
-    setLoading(true);
-    setError("");
-  };
-
-  const stopLoading = () => {
-    setLoading(false);
   };
 
   const buildCredentials = () => {
@@ -39,8 +29,13 @@ function Login() {
     };
   };
 
-  const updateField = (setter) => (e) => {
-    setter(e.target.value);
+  const startLoading = () => {
+    setLoading(true);
+    setError("");
+  };
+
+  const stopLoading = () => {
+    setLoading(false);
   };
 
   const handleSuccess = (auth) => {
@@ -68,48 +63,79 @@ function Login() {
     }
   };
 
+  const handleDemoAccount = ({
+    email,
+    password,
+  }) => {
+    setEmail(email);
+    setPassword(password);
+    setError("");
+  };
+
+  const togglePassword = () => {
+    setShowPassword((previous) => !previous);
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+    <div
+      className="container-fluid bg-light min-vh-100 d-flex align-items-center"
+    >
+      <div className="container">
+        <div className="row justify-content-center align-items-center g-5">
+          <div className="col-lg-5">
+            <div className="text-center text-lg-start">
+              <h1 className="display-5 fw-bold mb-3">
+                CV Management
+                <br />
+                System
+              </h1>
 
-      {error && <p>{error}</p>}
+              <p className="lead text-muted">
+                A modern recruitment platform for managing
+                candidates, recruiters, positions, CVs, and
+                hiring workflows.
+              </p>
 
-      <div>
-        <label>Email</label>
+              <div className="mt-4">
+                <span className="badge bg-primary me-2">
+                  React
+                </span>
 
-        <input
-          type="email"
-          value={email}
-          onChange={updateField(setEmail)}
-          required
-        />
+                <span className="badge bg-success me-2">
+                  Express
+                </span>
+
+                <span className="badge bg-dark">
+                  PostgreSQL
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-5">
+            <LoginForm
+              email={email}
+              password={password}
+              error={error}
+              loading={loading}
+              showPassword={showPassword}
+              onEmailChange={(e) =>
+                setEmail(e.target.value)
+              }
+              onPasswordChange={(e) =>
+                setPassword(e.target.value)
+              }
+              onTogglePassword={togglePassword}
+              onSubmit={handleSubmit}
+            />
+
+            <DemoAccounts
+              onSelectAccount={handleDemoAccount}
+            />
+          </div>
+        </div>
       </div>
-
-      <div>
-        <label>Password</label>
-
-        <input
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={updateField(setPassword)}
-          required
-        />
-
-        <button
-          type="button"
-          onClick={togglePassword}
-        >
-          {showPassword ? "Hide" : "Show"}
-        </button>
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-      >
-        {loading ? "Logging in..." : "Login"}
-      </button>
-    </form>
+    </div>
   );
 }
 
