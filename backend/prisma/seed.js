@@ -2,13 +2,17 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
-
+const createTemplate = (data) => {
+  return prisma.template.create({ data });
+};
 async function main() {
   await prisma.cVAttributeValue.deleteMany();
   await prisma.positionAttribute.deleteMany();
+  await prisma.templateAttribute.deleteMany();
   await prisma.cV.deleteMany();
-  await prisma.attribute.deleteMany();
   await prisma.position.deleteMany();
+  await prisma.template.deleteMany();
+  await prisma.attribute.deleteMany();
   await prisma.user.deleteMany();
 
   const adminPassword = await bcrypt.hash("admin123", 10);
@@ -37,6 +41,12 @@ async function main() {
       },
     ],
   });
+  const candidate = await prisma.user.findUnique({
+    where: {
+      email: "candidate@test.com",
+    },
+  });
+
   const frontend = await prisma.position.create({
     data: {
       title: "Frontend Developer",
@@ -156,7 +166,49 @@ async function main() {
     ],
   });
 
-  const attributes = await prisma.attribute.createMany({
+  const templates = await Promise.all([
+    createTemplate({
+      name: "Frontend Developer Template",
+      department: "Engineering",
+      location: "Remote",
+      visibility: "Public",
+      projectTag: "Frontend",
+      maxProjects: 5,
+      description: "Template for frontend engineering positions.",
+    }),
+
+    createTemplate({
+      name: "Backend Developer Template",
+      department: "Engineering",
+      location: "Remote",
+      visibility: "Public",
+      projectTag: "Backend",
+      maxProjects: 5,
+      description: "Template for backend engineering positions.",
+    }),
+
+    createTemplate({
+      name: "Full Stack Developer Template",
+      department: "Engineering",
+      location: "Remote",
+      visibility: "Public",
+      projectTag: "Full Stack",
+      maxProjects: 5,
+      description: "Template for full stack engineering positions.",
+    }),
+
+    createTemplate({
+      name: "QA Engineer Template",
+      department: "Quality Assurance",
+      location: "Remote",
+      visibility: "Public",
+      projectTag: "QA",
+      maxProjects: 5,
+      description: "Template for QA engineering positions.",
+    }),
+  ]);
+
+  await prisma.attribute.createMany({
     data: [
       { name: "First Name", category: "Personal", type: "Text" },
       { name: "Last Name", category: "Personal", type: "Text" },
@@ -167,7 +219,11 @@ async function main() {
       { name: "University", category: "Education", type: "Text" },
       { name: "Degree", category: "Education", type: "Text" },
       { name: "GPA", category: "Education", type: "Number" },
-      { name: "Programming Language", category: "Skills", type: "Text" },
+      {
+        name: "Programming Language",
+        category: "Skills",
+        type: "Text",
+      },
     ],
   });
 
@@ -191,9 +247,85 @@ async function main() {
     })),
   });
 
+  const getAttributeId = (name) => {
+    const attribute = allAttributes.find(
+      (attribute) => attribute.name === name,
+    );
+
+    if (!attribute) {
+      throw new Error(`Attribute "${name}" not found.`);
+    }
+
+    return attribute.id;
+  };
+
+  const frontendAttributes = [
+    "First Name",
+    "Last Name",
+    "Email",
+    "GitHub",
+    "Programming Language",
+  ];
+
+  const backendAttributes = [
+    "First Name",
+    "Last Name",
+    "Email",
+    "Programming Language",
+    "University",
+    "Degree",
+  ];
+
+  const fullStackAttributes = [
+    "First Name",
+    "Last Name",
+    "Email",
+    "GitHub",
+    "LinkedIn",
+    "Programming Language",
+    "University",
+    "Degree",
+  ];
+
+  const qaAttributes = [
+    "First Name",
+    "Last Name",
+    "Email",
+    "Phone",
+    "Programming Language",
+  ];
+
+  const templateAttributeMap = [
+    {
+      template: templates[0],
+      attributes: frontendAttributes,
+    },
+    {
+      template: templates[1],
+      attributes: backendAttributes,
+    },
+    {
+      template: templates[2],
+      attributes: fullStackAttributes,
+    },
+    {
+      template: templates[3],
+      attributes: qaAttributes,
+    },
+  ];
+
+  for (const item of templateAttributeMap) {
+    await prisma.templateAttribute.createMany({
+      data: item.attributes.map((name) => ({
+        templateId: item.template.id,
+        attributeId: getAttributeId(name),
+      })),
+    });
+  }
+
   const createdJohn = await prisma.cV.create({
     data: {
-      candidateName: "John Smith",
+      candidateId: candidate.id,
       positionId: frontend.id,
       positionTitle: frontend.title,
       status: "Draft",
@@ -203,7 +335,7 @@ async function main() {
 
   const createdJane = await prisma.cV.create({
     data: {
-      candidateName: "Jane Doe",
+      candidateId: candidate.id,
       positionId: backend.id,
       positionTitle: backend.title,
       status: "Submitted",

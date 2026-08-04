@@ -4,10 +4,8 @@ import { getCurrentUser } from "../utils/auth";
 
 function CVForm({ positions, initialValues, onSubmit, onClose }) {
   const user = getCurrentUser();
+  const candidateId = user?.id;
   const isCandidate = user?.role === "candidate";
-  const [candidateName, setCandidateName] = useState(
-    initialValues?.candidateName ?? "",
-  );
 
   const [positionTitle, setPositionTitle] = useState(
     initialValues?.positionTitle ?? "",
@@ -23,7 +21,7 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
     e.preventDefault();
 
     if (
-      !candidateName.trim() ||
+      !candidateId ||
       !positionTitle.trim() ||
       !positionId ||
       (!isCandidate && !status.trim())
@@ -35,7 +33,7 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
     setValidationError("");
 
     onSubmit({
-      candidateName: candidateName.trim(),
+      candidateId,
       positionId,
       positionTitle,
       status,
@@ -56,14 +54,9 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
             </div>
           )}
           <div className="mb-3">
-            <label className="form-label">Candidate Name</label>
+            <label className="form-label">Candidate</label>
 
-            <input
-              type="text"
-              className="form-control"
-              value={candidateName}
-              onChange={(e) => setCandidateName(e.target.value)}
-            />
+            <input className="form-control" value={user?.name ?? ""} disabled />
           </div>
 
           <div className="mb-3">

@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import Attributes from "./pages/Attributes";
 import MainLayout from "./layout/MainLayout";
 import AuthInitializer from "./components/AuthInitializer";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             >
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/cvs" element={<CVs />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/about" element={<About />} />
             </Route>
 

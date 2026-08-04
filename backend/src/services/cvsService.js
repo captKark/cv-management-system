@@ -1,43 +1,27 @@
-const cvs = [
-  {
-    id: 1,
-    candidateName: "John Smith",
-    positionId: 1,
-    positionTitle: "Frontend Developer",
-    status: "Draft",
-    updatedAt: "2026-07-21",
-  },
-  {
-    id: 2,
-    candidateName: "Jane Doe",
-    positionId: 2,
-    positionTitle: "Backend Developer",
-    status: "Submitted",
-    updatedAt: "2026-07-20",
-  },
-];
-
 const prisma = require("../lib/prisma");
 
 const getAllCVs = async () => {
-  return await prisma.cV.findMany({
+  return prisma.cV.findMany({
     include: {
+      candidate: true,
       attributeValues: {
         include: {
           attribute: true,
         },
       },
     },
-    orderBy: {
-      id: "asc",
-    },
   });
 };
-
+const getCVById = (id) => {
+  return prisma.cV.findUnique({
+    where: { id },
+  });
+};
 const createCV = async (cvData) => {
   return await prisma.$transaction(async (tx) => {
     const createdCV = await tx.cV.create({
       data: {
+        candidateId: Number(cvData.candidateId),
         candidateName: cvData.candidateName,
         positionId: Number(cvData.positionId),
         positionTitle: cvData.positionTitle,
@@ -98,6 +82,7 @@ const updateCV = async (id, updatedData) => {
         id,
       },
       data: {
+        candidateId: Number(updatedData.candidateId),
         candidateName: updatedData.candidateName,
         positionId: Number(updatedData.positionId),
         positionTitle: updatedData.positionTitle,
@@ -184,6 +169,7 @@ const deleteCVs = async (ids) => {
 
 module.exports = {
   getAllCVs,
+  getCVById,
   createCV,
   updateCV,
   deleteCVs,

@@ -19,7 +19,8 @@ function Toolbar({
 
   onAssignAttributes,
   canAssignAttributes,
-
+  onGeneratePosition,
+  canGeneratePosition,
   onViewAttributes,
   canViewAttributes,
 
@@ -74,7 +75,19 @@ function Toolbar({
           Assign Attributes
         </button>
       )}
-
+      {onGeneratePosition && (
+        <button
+          className={`btn shadow-sm ${
+            canGeneratePosition
+              ? "btn-success"
+              : "btn-light text-secondary border"
+          }`}
+          onClick={onGeneratePosition}
+          disabled={!canGeneratePosition}
+        >
+          Generate Position
+        </button>
+      )}
       {onDuplicateSelected && (
         <button
           className={`btn shadow-sm ${
@@ -146,9 +159,7 @@ function Toolbar({
       </button>
 
       <div className="ms-auto text-secondary fs-8 fw-regular">
-        {selectedCount === 0
-          ? ""
-          : `Selected: ${selectedCount}`}
+        {selectedCount === 0 ? "" : `Selected: ${selectedCount}`}
       </div>
     </div>
   );

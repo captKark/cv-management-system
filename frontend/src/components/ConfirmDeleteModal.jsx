@@ -4,6 +4,8 @@ function ConfirmDeleteModal({
   onConfirm,
   onCancel,
   loading = false,
+  confirmLabel = "Delete",
+  loadingLabel = "Deleting...",
 }) {
   return (
     <>

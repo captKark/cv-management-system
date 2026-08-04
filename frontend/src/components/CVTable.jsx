@@ -55,8 +55,7 @@ function CVTable({
                       />
                     </td>
 
-                    <td>{cv.candidateName}</td>
-
+                    <td>{cv.candidate?.name ?? "—"}</td>
                     <td>{cv.positionTitle}</td>
 
                     <td>
