@@ -15,6 +15,31 @@ const buildAuthResponse = (user) => {
   };
 };
 
+const createUser = async ({ name, email, password, role }) => {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (existingUser) {
+    throw new Error("Email is already registered.");
+  }
+
+  const passwordHash = await hashPassword(password);
+  return prisma.user.create({
+    data: {
+      name,
+      email,
+      passwordHash,
+      role,
+    },
+  });
+};
+const hashPassword = async (password) => {
+  return bcrypt.hash(password, 10);
+};
+
 const login = async (email, password) => {
   const user = await prisma.user.findUnique({
     where: {
@@ -26,10 +51,7 @@ const login = async (email, password) => {
     return null;
   }
 
-  const passwordMatches = await bcrypt.compare(
-    password,
-    user.passwordHash,
-  );
+  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
 
   if (!passwordMatches) {
     return null;
@@ -38,33 +60,12 @@ const login = async (email, password) => {
   return buildAuthResponse(user);
 };
 
-const register = async ({
-  name,
-  email,
-  password,
-}) => {
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-
-  if (existingUser) {
-    throw new Error("Email is already registered.");
-  }
-
-  const passwordHash = await bcrypt.hash(
+const register = async ({ name, email, password }) => {
+  const user = await createUser({
+    name,
+    email,
     password,
-    10,
-  );
-
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      passwordHash,
-      role: "candidate",
-    },
+    role: "candidate",
   });
 
   return buildAuthResponse(user);
@@ -90,5 +91,7 @@ const getCurrentUser = async (id) => {
 module.exports = {
   login,
   register,
+  createUser,
+  hashPassword,
   getCurrentUser,
 };

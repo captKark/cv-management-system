@@ -6,6 +6,7 @@ function StatusBadge({ status }) {
     Submitted: "bg-primary",
     "On Hold": "bg-secondary",
     Interviewing: "bg-warning text-dark",
+    Inactive: "bg-danger",
   };
 
   return (

@@ -1,5 +1,5 @@
 const prisma = require("../lib/prisma");
-
+const { createUser, hashPassword } = require("./authService");
 const buildWhereClause = (search, role) => {
   const where = {};
 
@@ -27,12 +27,29 @@ const buildWhereClause = (search, role) => {
   return where;
 };
 
-const getUsers = async ({
-  page,
-  pageSize,
-  search,
-  role,
-}) => {
+const updateUsersStatus = async (ids, isActive, currentUserId) => {
+  if (!isActive && ids.includes(currentUserId)) {
+    throw new Error("You cannot deactivate your own account.");
+  }
+  await prisma.user.updateMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+    data: {
+      isActive,
+    },
+  });
+};
+const activateUsers = async (ids) => {
+  return updateUsersStatus(ids, true);
+};
+
+const deactivateUsers = async (ids, currentUserId) => {
+  return updateUsersStatus(ids, false, currentUserId);
+};
+const getUsers = async ({ page, pageSize, search, role }) => {
   const where = buildWhereClause(search, role);
 
   const users = await prisma.user.findMany({
@@ -62,7 +79,31 @@ const getUsers = async ({
     total,
   };
 };
+const createRecruiter = async ({ name, email, password }) => {
+  return createUser({
+    name,
+    email,
+    password,
+    role: "recruiter",
+  });
+};
 
+const resetPassword = async (id, password) => {
+  const passwordHash = await hashPassword(password);
+
+  await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      passwordHash,
+    },
+  });
+};
 module.exports = {
   getUsers,
+  activateUsers,
+  deactivateUsers,
+  createRecruiter,
+  resetPassword,
 };
