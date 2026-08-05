@@ -1,23 +1,36 @@
 const xmlrpc = require("xmlrpc");
 const config = require("../config/odoo");
 
-const getHost = () =>
-  new URL(config.url).hostname;
+const url = new URL(config.url);
 
-const getPort = () =>
-  Number(new URL(config.url).port || 8069);
+const clientOptions = {
+  host: url.hostname,
+  port: Number(
+    url.port ||
+      (url.protocol === "https:" ? 443 : 8069),
+  ),
+};
 
-const commonClient = xmlrpc.createClient({
-  host: getHost(),
-  port: getPort(),
-  path: "/xmlrpc/2/common",
-});
+const createClient = (path) => {
+  const options = {
+    ...clientOptions,
+    path,
+  };
 
-const objectClient = xmlrpc.createClient({
-  host: getHost(),
-  port: getPort(),
-  path: "/xmlrpc/2/object",
-});
+  if (url.protocol === "https:") {
+    return xmlrpc.createSecureClient(options);
+  }
+
+  return xmlrpc.createClient(options);
+};
+
+const commonClient = createClient(
+  "/xmlrpc/2/common",
+);
+
+const objectClient = createClient(
+  "/xmlrpc/2/object",
+);
 
 const authenticate = () =>
   new Promise((resolve, reject) => {
@@ -32,6 +45,14 @@ const authenticate = () =>
       (err, uid) => {
         if (err) {
           return reject(err);
+        }
+
+        if (!uid) {
+          return reject(
+            new Error(
+              "Failed to authenticate with Odoo.",
+            ),
+          );
         }
 
         resolve(uid);
