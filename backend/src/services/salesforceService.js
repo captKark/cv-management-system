@@ -94,18 +94,14 @@ const createAccount = async (accessToken, instanceUrl, data) => {
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
       },
     },
   );
 
   return response.data.id;
 };
-const findContactByEmail = async (
-  accessToken,
-  instanceUrl,
-  email,
-) => {
+const findContactByEmail = async (accessToken, instanceUrl, email) => {
   const query = `
     SELECT Id, FirstName, LastName, Email, Phone
     FROM Contact
@@ -151,12 +147,7 @@ const createContact = async (accessToken, instanceUrl, accountId, data) => {
 
   return response.data.id;
 };
-const updateContact = async (
-  accessToken,
-  instanceUrl,
-  contactId,
-  data,
-) => {
+const updateContact = async (accessToken, instanceUrl, contactId, data) => {
   await axios.patch(
     `${instanceUrl}/services/data/${sfConfig.apiVersion}/sobjects/Contact/${contactId}`,
     {

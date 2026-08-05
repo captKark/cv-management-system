@@ -8,6 +8,7 @@ const userRoutes = require("./routes/userRoutes");
 const templateRoutes = require("./routes/templateRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const salesforceRoutes = require("./routes/salesforceRoutes");
+const odooRoutes = require("./routes/odooRoutes");
 const app = express();
 
 app.use(
@@ -22,6 +23,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/templates", templateRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/salesforce", salesforceRoutes);
+app.use("/api/odoo", odooRoutes);
 app.get("/", (req, res) => {
   res.json({
     status: "ok",

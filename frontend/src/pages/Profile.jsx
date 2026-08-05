@@ -5,10 +5,11 @@ import { useSearchParams } from "react-router-dom";
 
 import Modal from "../components/Modal";
 import SalesforceExportModal from "../components/SalesforceExportModal";
+import OdooExportModal from "../components/OdooExportModal";
 function Profile() {
   const [profile, setProfile] = useState(null);
   const [showSalesforceModal, setShowSalesforceModal] = useState(false);
-
+  const [showOdooModal, setShowOdooModal] = useState(false);
   const [searchParams] = useSearchParams();
 
   const salesforceStatus = searchParams.get("salesforce");
@@ -150,12 +151,23 @@ function Profile() {
           )}
         </div>
       </div>
-      <div className="mt-4">
+      <div className="d-flex gap-2 mt-4">
         <button
           className="btn btn-primary"
-          onClick={() => setShowSalesforceModal(true)}
+          onClick={() => {
+            const token = getAuthToken();
+
+            window.location.href = `http://localhost:3000/api/profile/salesforce/login?token=${token}`;
+          }}
         >
           Export to Salesforce
+        </button>
+
+        <button
+          className="btn btn-success"
+          onClick={() => setShowOdooModal(true)}
+        >
+          Export to Odoo
         </button>
       </div>
       {showSalesforceModal && (
@@ -165,6 +177,21 @@ function Profile() {
         >
           <SalesforceExportModal
             onClose={() => setShowSalesforceModal(false)}
+          />
+        </Modal>
+      )}
+      {showOdooModal && (
+        <Modal
+          title="Export to Odoo"
+          onClose={() => setShowOdooModal(false)}
+          size="sm"
+        >
+          <OdooExportModal
+            onClose={() => setShowOdooModal(false)}
+            onSuccess={() => {
+              setShowOdooModal(false);
+              alert("Successfully exported to Odoo.");
+            }}
           />
         </Modal>
       )}
