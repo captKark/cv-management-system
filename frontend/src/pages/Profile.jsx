@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-
-import { getProfile } from "../services/profileService";
 import { useSearchParams } from "react-router-dom";
 
 import Modal from "../components/Modal";
 import SalesforceExportModal from "../components/SalesforceExportModal";
 import OdooExportModal from "../components/OdooExportModal";
+
+import { getProfile } from "../services/profileService";
+import { getAuthToken } from "../utils/auth";
+
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://cv-management-api.onrender.com";
+
 function Profile() {
   const [profile, setProfile] = useState(null);
   const [showSalesforceModal, setShowSalesforceModal] = useState(false);
@@ -13,6 +19,7 @@ function Profile() {
   const [searchParams] = useSearchParams();
 
   const salesforceStatus = searchParams.get("salesforce");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -31,7 +38,6 @@ function Profile() {
 
   const loadProfile = async () => {
     const data = await getProfile();
-
     setProfile(data);
   };
 
@@ -70,7 +76,10 @@ function Profile() {
       <div className="mb-4">
         <h2 className="fw-bold mb-1">My Profile</h2>
 
-        <p className="text-muted mb-0">View your account information.</p>
+        <p className="text-muted mb-0">
+          View your account information.
+        </p>
+
         {salesforceStatus === "success" && (
           <div className="alert alert-success mt-3">
             Successfully exported to Salesforce.
@@ -88,29 +97,53 @@ function Profile() {
         <div className="card-body">
           <div className="row g-3">
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Name</label>
-
-              <input className="form-control" value={profile.name} disabled />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Email</label>
-
-              <input className="form-control" value={profile.email} disabled />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Role</label>
-
-              <input className="form-control" value={profile.role} disabled />
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Status</label>
+              <label className="form-label fw-semibold">
+                Name
+              </label>
 
               <input
                 className="form-control"
-                value={profile.isActive ? "Active" : "Inactive"}
+                value={profile.name}
+                disabled
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Email
+              </label>
+
+              <input
+                className="form-control"
+                value={profile.email}
+                disabled
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Role
+              </label>
+
+              <input
+                className="form-control"
+                value={profile.role}
+                disabled
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Status
+              </label>
+
+              <input
+                className="form-control"
+                value={
+                  profile.isActive
+                    ? "Active"
+                    : "Inactive"
+                }
                 disabled
               />
             </div>
@@ -123,7 +156,9 @@ function Profile() {
           <h5 className="mb-3">My CVs</h5>
 
           {profile.cvs.length === 0 ? (
-            <p className="text-muted mb-0">No CVs found.</p>
+            <p className="text-muted mb-0">
+              No CVs found.
+            </p>
           ) : (
             <div className="table-responsive">
               <table className="table table-striped mb-0">
@@ -139,9 +174,7 @@ function Profile() {
                   {profile.cvs.map((cv) => (
                     <tr key={cv.id}>
                       <td>{cv.positionTitle}</td>
-
                       <td>{cv.status}</td>
-
                       <td>{cv.updatedAt}</td>
                     </tr>
                   ))}
@@ -151,13 +184,15 @@ function Profile() {
           )}
         </div>
       </div>
+
       <div className="d-flex gap-2 mt-4">
         <button
           className="btn btn-primary"
           onClick={() => {
             const token = getAuthToken();
 
-            window.location.href = `http://localhost:3000/api/profile/salesforce/login?token=${token}`;
+            window.location.href =
+              `${API_URL}/api/profile/salesforce/login?token=${token}`;
           }}
         >
           Export to Salesforce
@@ -170,16 +205,22 @@ function Profile() {
           Export to Odoo
         </button>
       </div>
+
       {showSalesforceModal && (
         <Modal
           title="Export to Salesforce"
-          onClose={() => setShowSalesforceModal(false)}
+          onClose={() =>
+            setShowSalesforceModal(false)
+          }
         >
           <SalesforceExportModal
-            onClose={() => setShowSalesforceModal(false)}
+            onClose={() =>
+              setShowSalesforceModal(false)
+            }
           />
         </Modal>
       )}
+
       {showOdooModal && (
         <Modal
           title="Export to Odoo"
@@ -190,7 +231,9 @@ function Profile() {
             onClose={() => setShowOdooModal(false)}
             onSuccess={() => {
               setShowOdooModal(false);
-              alert("Successfully exported to Odoo.");
+              alert(
+                "Successfully exported to Odoo."
+              );
             }}
           />
         </Modal>
