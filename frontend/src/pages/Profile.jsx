@@ -6,6 +6,7 @@ import SalesforceExportModal from "../components/SalesforceExportModal";
 import OdooExportModal from "../components/OdooExportModal";
 
 import { getProfile } from "../services/profileService";
+import { exportToPowerAutomate } from "../services/powerAutomateService";
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -17,7 +18,12 @@ function Profile() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [powerAutomateLoading, setPowerAutomateLoading] = useState(false);
+  const [powerAutomateLoading, setPowerAutomateLoading] = useState(false);
 
+  const [powerAutomateResult, setPowerAutomateResult] = useState(null);
+
+  const [powerAutomateError, setPowerAutomateError] = useState("");
   const startLoading = () => {
     setLoading(true);
     setError("");
@@ -65,15 +71,29 @@ function Profile() {
   if (error) {
     return <div className="alert alert-danger mt-3">{error}</div>;
   }
+  const handlePowerAutomateExport = async () => {
+    try {
+      setPowerAutomateLoading(true);
+      setPowerAutomateError("");
+      setPowerAutomateResult(null);
 
+      const result = await exportToPowerAutomate();
+
+      setPowerAutomateResult(result);
+    } catch (err) {
+      setPowerAutomateError(
+        err.message || "Unable to export to Power Automate.",
+      );
+    } finally {
+      setPowerAutomateLoading(false);
+    }
+  };
   return (
     <div className="container py-4">
       <div className="mb-4">
         <h2 className="fw-bold mb-1">My Profile</h2>
 
-        <p className="text-muted mb-0">
-          View your account information.
-        </p>
+        <p className="text-muted mb-0">View your account information.</p>
 
         {salesforceStatus === "success" && (
           <div className="alert alert-success mt-3">
@@ -92,53 +112,29 @@ function Profile() {
         <div className="card-body">
           <div className="row g-3">
             <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Name
-              </label>
+              <label className="form-label fw-semibold">Name</label>
 
-              <input
-                className="form-control"
-                value={profile.name}
-                disabled
-              />
+              <input className="form-control" value={profile.name} disabled />
             </div>
 
             <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Email
-              </label>
+              <label className="form-label fw-semibold">Email</label>
 
-              <input
-                className="form-control"
-                value={profile.email}
-                disabled
-              />
+              <input className="form-control" value={profile.email} disabled />
             </div>
 
             <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Role
-              </label>
+              <label className="form-label fw-semibold">Role</label>
 
-              <input
-                className="form-control"
-                value={profile.role}
-                disabled
-              />
+              <input className="form-control" value={profile.role} disabled />
             </div>
 
             <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Status
-              </label>
+              <label className="form-label fw-semibold">Status</label>
 
               <input
                 className="form-control"
-                value={
-                  profile.isActive
-                    ? "Active"
-                    : "Inactive"
-                }
+                value={profile.isActive ? "Active" : "Inactive"}
                 disabled
               />
             </div>
@@ -151,9 +147,7 @@ function Profile() {
           <h5 className="mb-3">My CVs</h5>
 
           {profile.cvs.length === 0 ? (
-            <p className="text-muted mb-0">
-              No CVs found.
-            </p>
+            <p className="text-muted mb-0">No CVs found.</p>
           ) : (
             <div className="table-responsive">
               <table className="table table-striped mb-0">
@@ -182,11 +176,11 @@ function Profile() {
 
       <div className="d-flex gap-2 mt-4">
         <button
-  className="btn btn-primary"
-  onClick={() => setShowSalesforceModal(true)}
->
-  Export to Salesforce
-</button>
+          className="btn btn-primary"
+          onClick={() => setShowSalesforceModal(true)}
+        >
+          Export to Salesforce
+        </button>
 
         <button
           className="btn btn-success"
@@ -194,19 +188,23 @@ function Profile() {
         >
           Export to Odoo
         </button>
+
+        <button
+          className="btn btn-warning"
+          onClick={handlePowerAutomateExport}
+          disabled={powerAutomateLoading}
+        >
+          {powerAutomateLoading ? "Exporting..." : "Export to Power Automate"}
+        </button>
       </div>
 
       {showSalesforceModal && (
         <Modal
           title="Export to Salesforce"
-          onClose={() =>
-            setShowSalesforceModal(false)
-          }
+          onClose={() => setShowSalesforceModal(false)}
         >
           <SalesforceExportModal
-            onClose={() =>
-              setShowSalesforceModal(false)
-            }
+            onClose={() => setShowSalesforceModal(false)}
           />
         </Modal>
       )}
@@ -221,12 +219,31 @@ function Profile() {
             onClose={() => setShowOdooModal(false)}
             onSuccess={() => {
               setShowOdooModal(false);
-              alert(
-                "Successfully exported to Odoo."
-              );
+              alert("Successfully exported to Odoo.");
             }}
           />
         </Modal>
+      )}
+      {powerAutomateResult && (
+        <div className="alert alert-success mt-3 mb-0">
+          <div className="fw-semibold">
+            ✓ Successfully exported to Power Automate.
+          </div>
+
+          <div className="mt-2">
+            <strong>Generated file:</strong> {powerAutomateResult.fileName}
+          </div>
+
+          {powerAutomateResult.driveFileId && (
+            <div>
+              <strong>Drive File ID:</strong> {powerAutomateResult.driveFileId}
+            </div>
+          )}
+        </div>
+      )}
+
+      {powerAutomateError && (
+        <div className="alert alert-danger mt-3 mb-0">{powerAutomateError}</div>
       )}
     </div>
   );
