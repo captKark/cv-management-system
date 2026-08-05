@@ -42,7 +42,9 @@ const callback = async (req, res) => {
     const { code, state } = req.query;
 
     if (!code || !state) {
-      return res.redirect("http://localhost:5173/profile?salesforce=failed");
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/profile?salesforce=failed`,
+      );
     }
 
     const session = await salesforceService.exchangeCodeForToken(code, state);
@@ -50,7 +52,9 @@ const callback = async (req, res) => {
     const profile = await profileService.getProfile(session.userId);
 
     if (!profile) {
-      return res.redirect("http://localhost:5173/profile?salesforce=failed");
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/profile?salesforce=failed`,
+      );
     }
 
     const nameParts = profile.name.trim().split(/\s+/);
@@ -98,7 +102,9 @@ const callback = async (req, res) => {
       );
     }
 
-    return res.redirect("http://localhost:5173/profile?salesforce=success");
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/profile?salesforce=success`,
+    );
   } catch (error) {
     console.error("========== SALESFORCE CALLBACK ==========");
     console.error(error);
