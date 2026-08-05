@@ -19,7 +19,6 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [powerAutomateLoading, setPowerAutomateLoading] = useState(false);
-  const [powerAutomateLoading, setPowerAutomateLoading] = useState(false);
 
   const [powerAutomateResult, setPowerAutomateResult] = useState(null);
 
