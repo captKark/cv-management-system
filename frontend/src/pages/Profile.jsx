@@ -6,11 +6,6 @@ import SalesforceExportModal from "../components/SalesforceExportModal";
 import OdooExportModal from "../components/OdooExportModal";
 
 import { getProfile } from "../services/profileService";
-import { getAuthToken } from "../utils/auth";
-
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "https://cv-management-api.onrender.com";
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -187,16 +182,11 @@ function Profile() {
 
       <div className="d-flex gap-2 mt-4">
         <button
-          className="btn btn-primary"
-          onClick={() => {
-            const token = getAuthToken();
-
-            window.location.href =
-              `${API_URL}/api/profile/salesforce/login?token=${token}`;
-          }}
-        >
-          Export to Salesforce
-        </button>
+  className="btn btn-primary"
+  onClick={() => setShowSalesforceModal(true)}
+>
+  Export to Salesforce
+</button>
 
         <button
           className="btn btn-success"
