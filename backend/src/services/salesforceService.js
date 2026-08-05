@@ -21,6 +21,8 @@ const generateAuthorizationUrl = (userId, payload = {}) => {
 
   savePkce(state, verifier, userId, payload);
 
+  console.log("Salesforce Callback URL:", sfConfig.callbackUrl);
+
   const params = new URLSearchParams({
     response_type: "code",
     client_id: sfConfig.clientId,
@@ -172,6 +174,7 @@ const updateContact = async (
 
   return contactId;
 };
+
 module.exports = {
   generateAuthorizationUrl,
   exchangeCodeForToken,
