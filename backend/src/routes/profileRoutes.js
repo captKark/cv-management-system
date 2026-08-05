@@ -1,6 +1,6 @@
 const express = require("express");
 
-const profileController = require("../controllers/profileController");
+const { getProfile } = require("../controllers/profileController");
 
 const authenticate = require("../middleware/authenticate");
 
@@ -9,7 +9,7 @@ const router = express.Router();
 router.get(
   "/",
   authenticate,
-  profileController.getProfile,
+  getProfile,
 );
 
 module.exports = router;
