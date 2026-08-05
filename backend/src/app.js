@@ -9,8 +9,12 @@ const templateRoutes = require("./routes/templateRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const salesforceRoutes = require("./routes/salesforceRoutes");
 const odooRoutes = require("./routes/odooRoutes");
+const powerAutomateRoutes = require("./routes/powerAutomateRoutes");
 const app = express();
-
+app.use((req, res, next) => {
+  console.log("REQUEST:", req.method, req.originalUrl);
+  next();
+});
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -24,6 +28,7 @@ app.use("/api/templates", templateRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/salesforce", salesforceRoutes);
 app.use("/api/odoo", odooRoutes);
+app.use("/api/power-automate", powerAutomateRoutes);
 app.get("/", (req, res) => {
   res.json({
     status: "ok",

@@ -55,6 +55,7 @@ const createCV = async (cvData) => {
         id: createdCV.id,
       },
       include: {
+        candidate: true,
         attributeValues: {
           include: {
             attribute: true,
@@ -123,6 +124,7 @@ const updateCV = async (id, updatedData) => {
         id,
       },
       include: {
+        candidate: true,
         attributeValues: {
           include: {
             attribute: true,
