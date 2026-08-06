@@ -78,37 +78,57 @@ function Login() {
 
   return (
     <div
-      className="container-fluid bg-light min-vh-100 d-flex align-items-center"
+      className="container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #ffffff 100%)",
+      }}
     >
-      <div className="container">
+      <div
+        className="position-absolute rounded-circle"
+        style={{
+          width: "420px",
+          height: "420px",
+          top: "-120px",
+          right: "-120px",
+          background: "rgba(99,102,241,.10)",
+          filter: "blur(70px)",
+        }}
+      />
+
+      <div
+        className="position-absolute rounded-circle"
+        style={{
+          width: "340px",
+          height: "340px",
+          bottom: "-100px",
+          left: "-100px",
+          background: "rgba(59,130,246,.08)",
+          filter: "blur(70px)",
+        }}
+      />
+
+      <div className="container position-relative">
         <div className="row justify-content-center align-items-center g-5">
           <div className="col-lg-5">
             <div className="text-center text-lg-start">
-              <h1 className="display-5 fw-bold mb-3">
+              <h1 className="display-4 fw-bold text-dark mb-3">
                 CV Management
                 <br />
                 System
               </h1>
 
-              <p className="lead text-muted">
+              <p
+                className="text-secondary fs-5 mb-0"
+                style={{
+                  maxWidth: "480px",
+                  lineHeight: "1.7",
+                }}
+              >
                 A modern recruitment platform for managing
-                candidates, recruiters, positions, CVs, and
-                hiring workflows.
+                candidates, recruiters, positions, CVs and
+                hiring workflows through one unified system.
               </p>
-
-              <div className="mt-4">
-                <span className="badge bg-primary me-2">
-                  React
-                </span>
-
-                <span className="badge bg-success me-2">
-                  Express
-                </span>
-
-                <span className="badge bg-dark">
-                  PostgreSQL
-                </span>
-              </div>
             </div>
           </div>
 
