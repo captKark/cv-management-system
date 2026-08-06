@@ -28,7 +28,6 @@ const createPartner = async (candidate) => {
         email: candidate.email,
         phone: candidate.phone,
         company_name: candidate.company,
-        customer_rank: 1,
       },
     ],
   );

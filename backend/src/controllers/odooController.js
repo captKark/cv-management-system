@@ -36,10 +36,12 @@ const exportToOdoo = async (req, res) => {
       message: "Successfully exported to Odoo.",
     });
   } catch (error) {
+    console.error("========== ODOO ERROR ==========");
     console.error(error);
 
     res.status(500).json({
-      message: "Failed to export to Odoo.",
+      message: error.message,
+      details: error,
     });
   }
 };
