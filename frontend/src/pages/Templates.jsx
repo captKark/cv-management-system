@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Toolbar from "../components/Toolbar";
 import Searchbar from "../components/Searchbar";
@@ -19,6 +19,8 @@ import {
 
 import { getAllAttributes } from "../services/attributeService";
 
+const ROWS_PER_PAGE = 5;
+
 function Templates() {
   const [templates, setTemplates] = useState([]);
   const [attributes, setAttributes] = useState([]);
@@ -36,16 +38,10 @@ function Templates() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [loading, setLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const startLoading = () => {
-    setLoading(true);
-    setError("");
-  };
-
-  const stopLoading = () => {
-    setLoading(false);
-  };
+  const firstLoad = useRef(true);
 
   const handleError = (err) => {
     setError(err.message);
@@ -53,6 +49,7 @@ function Templates() {
 
   const buildQuery = () => ({
     page: currentPage,
+    pageSize: ROWS_PER_PAGE,
     search: searchText,
   });
 
@@ -75,14 +72,22 @@ function Templates() {
 
   useEffect(() => {
     const fetchTemplates = async () => {
-      startLoading();
+      setError("");
+
+      if (firstLoad.current) {
+        setLoading(true);
+      } else {
+        setTableLoading(true);
+      }
 
       try {
         await loadTemplates();
       } catch (err) {
         handleError(err);
       } finally {
-        stopLoading();
+        setLoading(false);
+        setTableLoading(false);
+        firstLoad.current = false;
       }
     };
 
@@ -170,7 +175,13 @@ function Templates() {
       closeModal();
       handleClearSelection();
 
-      await loadTemplates();
+      setTableLoading(true);
+
+      try {
+        await loadTemplates();
+      } finally {
+        setTableLoading(false);
+      }
     } catch (err) {
       handleError(err);
     }
@@ -185,12 +196,21 @@ function Templates() {
   };
 
   const refreshAfterDelete = async () => {
-    if (templates.length === selectedTemplates.length && currentPage > 1) {
+    if (
+      templates.length === selectedTemplates.length &&
+      currentPage > 1
+    ) {
       setCurrentPage((page) => page - 1);
       return;
     }
 
-    await loadTemplates();
+    setTableLoading(true);
+
+    try {
+      await loadTemplates();
+    } finally {
+      setTableLoading(false);
+    }
   };
 
   const removeTemplates = async () => {
@@ -205,17 +225,27 @@ function Templates() {
       handleError(err);
     }
   };
+
   const handleGeneratePosition = async () => {
     if (selectedTemplates.length !== 1) {
       return;
     }
 
-    await generatePosition(selectedTemplates[0]);
+    try {
+      setTableLoading(true);
 
-    handleClearSelection();
+      await generatePosition(selectedTemplates[0]);
 
-    await loadTemplates();
+      handleClearSelection();
+
+      await loadTemplates();
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setTableLoading(false);
+    }
   };
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center py-5">
@@ -229,13 +259,17 @@ function Templates() {
   if (error) {
     return <div className="alert alert-danger mt-3">{error}</div>;
   }
+
   const canGeneratePosition = selectedTemplates.length === 1;
+
   return (
     <div className="container py-4">
       <div className="mb-4">
         <h2 className="fw-bold mb-1">Position Templates</h2>
 
-        <p className="text-muted mb-0">Manage reusable position templates.</p>
+        <p className="text-muted mb-0">
+          Manage reusable position templates.
+        </p>
       </div>
 
       <Toolbar
@@ -255,17 +289,30 @@ function Templates() {
 
       <div className="row mb-3">
         <div className="col-md-8">
-          <Searchbar searchText={searchText} setSearchText={setSearchText} />
+          <Searchbar
+            searchText={searchText}
+            setSearchText={setSearchText}
+          />
         </div>
       </div>
 
-      <TemplateTable
-        templates={templates}
-        selectedTemplates={selectedTemplates}
-        allSelected={allSelected}
-        onToggleSelection={handleToggleSelection}
-        onSelectAll={handleSelectAll}
-      />
+      {tableLoading ? (
+        <div className="d-flex justify-content-center py-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">
+              Loading templates...
+            </span>
+          </div>
+        </div>
+      ) : (
+        <TemplateTable
+          templates={templates}
+          selectedTemplates={selectedTemplates}
+          allSelected={allSelected}
+          onToggleSelection={handleToggleSelection}
+          onSelectAll={handleSelectAll}
+        />
+      )}
 
       <Pagination
         currentPage={currentPage}
@@ -276,7 +323,11 @@ function Templates() {
       {showForm && (
         <Modal
           show={showForm}
-          title={editingTemplate ? "Edit Template" : "Create Template"}
+          title={
+            editingTemplate
+              ? "Edit Template"
+              : "Create Template"
+          }
           onClose={closeModal}
         >
           <TemplateForm

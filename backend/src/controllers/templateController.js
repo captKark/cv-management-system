@@ -3,7 +3,7 @@ const templateService = require("../services/templateService");
 const getTemplates = async (req, res) => {
   const {
     page = 1,
-    pageSize = 10,
+    pageSize = 5,
     search = "",
   } = req.query;
 
