@@ -52,7 +52,7 @@ function Templates() {
     pageSize: ROWS_PER_PAGE,
     search: searchText,
   });
-
+  
   const loadTemplates = async () => {
     const data = await getTemplates(buildQuery());
 
