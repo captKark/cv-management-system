@@ -264,7 +264,9 @@ const Attributes = () => {
       });
     }
   };
-
+  const handleClearSelection = () => {
+    setSelectedAttributes([]);
+  };
   if (loading) {
     return (
       <div className="d-flex justify-content-center py-5">
@@ -293,6 +295,7 @@ const Attributes = () => {
         canDelete={selectedAttributes.length > 0}
         addLabel="Add Attribute"
         selectedCount={selectedAttributes.length}
+        onClearSelection={handleClearSelection}
       />
       {notification.message && (
         <div
