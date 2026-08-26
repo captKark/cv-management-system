@@ -4,7 +4,7 @@ import { getCurrentUser } from "../utils/auth";
 
 function CVForm({ positions, initialValues, onSubmit, onClose }) {
   const user = getCurrentUser();
-  const candidateId = user?.id;
+  const candidateId = initialValues?.candidateId ?? user?.id;
   const isCandidate = user?.role === "candidate";
 
   const [positionTitle, setPositionTitle] = useState(
@@ -56,7 +56,11 @@ function CVForm({ positions, initialValues, onSubmit, onClose }) {
           <div className="mb-3">
             <label className="form-label">Candidate</label>
 
-            <input className="form-control" value={user?.name ?? ""} disabled />
+            <input
+              className="form-control"
+              value={initialValues?.candidate?.name ?? user?.name ?? ""}
+              disabled
+            />
           </div>
 
           <div className="mb-3">

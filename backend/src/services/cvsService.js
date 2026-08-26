@@ -15,6 +15,14 @@ const getAllCVs = async () => {
 const getCVById = (id) => {
   return prisma.cV.findUnique({
     where: { id },
+    include: {
+      candidate: true,
+      attributeValues: {
+        include: {
+          attribute: true,
+        },
+      },
+    },
   });
 };
 const createCV = async (cvData) => {
@@ -55,6 +63,7 @@ const createCV = async (cvData) => {
         id: createdCV.id,
       },
       include: {
+        candidate: true,
         attributeValues: {
           include: {
             attribute: true,
@@ -123,6 +132,7 @@ const updateCV = async (id, updatedData) => {
         id,
       },
       include: {
+        candidate: true,
         attributeValues: {
           include: {
             attribute: true,
