@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { DEPARTMENTS } from "../constants/departments";
 
 function TemplateForm({ template, attributes, onSubmit, onCancel }) {
   const [name, setName] = useState("");
@@ -82,12 +83,20 @@ function TemplateForm({ template, attributes, onSubmit, onCancel }) {
         <div className="col-md-6 mb-3">
           <label className="form-label">Department</label>
 
-          <input
-            className="form-control"
+          <select
+            className="form-select"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
             required
-          />
+          >
+            <option value="">Select Department</option>
+
+            {DEPARTMENTS.map((department) => (
+              <option key={department} value={department}>
+                {department}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="col-md-6 mb-3">
